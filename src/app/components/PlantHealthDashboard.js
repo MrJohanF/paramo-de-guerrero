@@ -1,4 +1,4 @@
-'use client';
+"use client"
 
 import React, { useState } from 'react';
 import { Plant, Leaf, Droplet, Sun, Thermometer, Bug, Fruit, AlertTriangle } from 'lucide-react';

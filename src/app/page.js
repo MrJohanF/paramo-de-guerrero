@@ -1,10 +1,9 @@
-import Image from "next/image";
-import Landing from "./components/landing"
+import PlantHealthDashboard from './components/PlantHealthDashboard';
 
 export default function Home() {
   return (
-    <main className="">
-      <Landing />
+    <main className="min-h-screen">
+      <PlantHealthDashboard />
     </main>
   );
 }
