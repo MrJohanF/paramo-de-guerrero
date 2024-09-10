@@ -2,7 +2,7 @@
 
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect} from "react";
 import {
   TextField,
   Select,
@@ -25,12 +25,21 @@ import {
   Menu,
   X,
 } from "lucide-react";
-import TablePaginationActions from "./Table";
+import dynamic from 'next/dynamic';
+
+// Dynamically import the TablePaginationActions component
+const TablePaginationActions = dynamic(() => import('./Table'), { ssr: false });
+
 
 const PlantHealthDashboard = () => {
   const [plantStatus, setPlantStatus] = useState("healthy");
   const [activeSection, setActiveSection] = useState("Dashboard");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const sidebarOptions = [
     { name: "Dashboard", icon: <Home className="w-6 h-6" /> },
@@ -382,6 +391,10 @@ const PlantHealthDashboard = () => {
     }
   };
 
+  if (!isMounted) {
+    return null; // or a loading spinner
+  }
+
   return (
     <div className="flex flex-col md:flex-row h-screen bg-gray-100">
       {/* Mobile Header */}
@@ -404,7 +417,7 @@ const PlantHealthDashboard = () => {
 
       {/* Sidebar */}
       <AnimatePresence>
-        {(isSidebarOpen || window.innerWidth >= 768) && (
+      {(isSidebarOpen || (typeof window !== 'undefined' && window.innerWidth >= 768)) && (
           <motion.div
             initial="closed"
             animate="open"
