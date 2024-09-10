@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { TextField } from "@mui/material";
 import {
   CirclePlus,
   Flower2,
@@ -71,38 +72,31 @@ const PlantHealthDashboard = () => {
           <div className="mt-8 bg-white p-6 rounded-lg shadow">
             <h3 className="text-lg font-semibold mb-4">Enter Plant Data</h3>
             <form>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label
-                    htmlFor="plantName"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Plant Name
-                  </label>
-                  <input
+                  <TextField
+                    label="Codigo"
+                    variant="standard"
                     type="text"
-                    id="plantName"
-                    name="plantName"
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                   />
                 </div>
                 <div>
-                  <label
-                    htmlFor="plantType"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Plant Type
-                  </label>
-                  <select
-                    id="plantType"
-                    name="plantType"
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                  >
-                    <option>Select type</option>
-                    <option>Flowering</option>
-                    <option>Foliage</option>
-                    <option>Succulent</option>
-                  </select>
+                  <TextField label="Especie" variant="standard" type="text" />;
+                </div>
+                <div>
+                  <TextField label="Ubicacion" variant="standard" type="text" />;
+                </div>
+                <div>
+                  <TextField label="Estado Actual" variant="standard" type="text" />;
+                </div>
+                <div>
+                  <TextField label="Fecha Estado Actual" variant="standard" type="Date" />;
+                </div>
+                <div>
+                  <TextField label="Condiciones actuales" variant="standard" type="text" />;
+                </div>
+                <div>
+                  <TextField label="Tags" variant="standard" type="text" />;
                 </div>
               </div>
               <div className="mt-4">
