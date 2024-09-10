@@ -21,6 +21,7 @@ import {
   PlusCircle,
   Home,
 } from "lucide-react";
+import TablePaginationActions from "./Table";
 
 const PlantHealthDashboard = () => {
   const [plantStatus, setPlantStatus] = useState("healthy");
@@ -78,14 +79,6 @@ const PlantHealthDashboard = () => {
           </FormControl>
         </motion.div>
       ))}
-      <motion.button
-        type="submit"
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        className="col-span-2 mt-6 py-3 px-6 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors duration-300 shadow-md"
-      >
-        Guardar
-      </motion.button>
     </motion.form>
   );
 
@@ -139,7 +132,9 @@ const PlantHealthDashboard = () => {
       case "Plantas":
         return (
           <div className="bg-white p-6 rounded-lg shadow-md">
-            <h3 className="text-2xl font-semibold mb-6 text-gray-400">Registro de Planta</h3>
+            <h3 className="text-2xl font-semibold mb-6 text-gray-400">
+              Registro de Planta
+            </h3>
             {renderForm([
               { name: "Código", type: "text" },
               { name: "Especie", type: "text" },
@@ -159,6 +154,17 @@ const PlantHealthDashboard = () => {
               { name: "Fecha Creación", type: "date" },
               { name: "Tags", type: "text" },
             ])}
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-6">
+              <motion.button
+                type="submit"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="col-span-2 mt-6 py-3 px-6 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors duration-300 shadow-md"
+              >
+                Guardar
+              </motion.button>
+            </div>
           </div>
         );
       case "Crecimiento":
@@ -174,6 +180,17 @@ const PlantHealthDashboard = () => {
               { name: "Número de Hojas", type: "number" },
               { name: "Fecha Medición", type: "date" },
             ])}
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-6">
+              <motion.button
+                type="submit"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="col-span-2 mt-6 py-3 px-6 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors duration-300 shadow-md"
+              >
+                Guardar
+              </motion.button>
+            </div>
           </div>
         );
       case "Produccion":
@@ -193,6 +210,17 @@ const PlantHealthDashboard = () => {
               },
               { name: "Destino", type: "text" },
             ])}
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-6">
+              <motion.button
+                type="submit"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="col-span-2 mt-6 py-3 px-6 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors duration-300 shadow-md"
+              >
+                Guardar
+              </motion.button>
+            </div>
           </div>
         );
       case "Anomalias":
@@ -207,6 +235,17 @@ const PlantHealthDashboard = () => {
               { name: "Fecha Detección", type: "date" },
               { name: "Tratamiento Sugerido", type: "text" },
             ])}
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-6">
+              <motion.button
+                type="submit"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="col-span-2 mt-6 py-3 px-6 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors duration-300 shadow-md"
+              >
+                Guardar
+              </motion.button>
+            </div>
           </div>
         );
       case "Sensores":
@@ -225,6 +264,16 @@ const PlantHealthDashboard = () => {
               { name: "Ubicación", type: "text" },
               { name: "Fecha Instalación", type: "date" },
             ])}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-6">
+              <motion.button
+                type="submit"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="col-span-2 mt-6 py-3 px-6 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors duration-300 shadow-md"
+              >
+                Guardar
+              </motion.button>
+            </div>
           </div>
         );
       case "Estado de plantas":
@@ -237,22 +286,48 @@ const PlantHealthDashboard = () => {
               { name: "ID Planta", type: "number" },
               { name: "Ubicación", type: "text" },
             ])}
+
+            <div className="mt-6 grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-6">
+              <TablePaginationActions />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-6">
+              <motion.button
+                type="submit"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="col-span-2 mt-6 py-3 px-6 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors duration-300 shadow-md"
+              >
+                Buscar
+              </motion.button>
+            </div>
           </div>
         );
-        case "Reportes":
-          return (
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-2xl font-semibold mb-6 text-gray-400">
-                Reportes de Anomalías
-              </h3>
-              {renderForm([
-                { name: "ID Planta", type: "number" },
-                { name: "Descripción", type: "text" },
-                { name: "Fecha Detección", type: "date" },
-                { name: "Tratamiento Sugerido", type: "text" },
-              ])}
+      case "Reportes":
+        return (
+          <div className="bg-white p-6 rounded-lg shadow-md">
+            <h3 className="text-2xl font-semibold mb-6 text-gray-400">
+              Reportes de Anomalías
+            </h3>
+            {renderForm([
+              { name: "ID Planta", type: "number" },
+              { name: "Descripción", type: "text" },
+              { name: "Fecha Detección", type: "date" },
+              { name: "Tratamiento Sugerido", type: "text" },
+            ])}
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+              <motion.button
+                type="submit"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="col-span-2 mt-6 py-3 px-6 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors duration-300 shadow-md"
+              >
+                Generar Reporte
+              </motion.button>
             </div>
-          );
+          </div>
+        );
       default:
         return null;
     }
