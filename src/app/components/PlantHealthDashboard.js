@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import {
+  CirclePlus,
   Flower2,
   Leaf,
   Droplet,
@@ -23,6 +24,7 @@ const PlantHealthDashboard = () => {
   ];
 
   const sidebarOptions = [
+    { name: "Nueva Planta", icon: <CirclePlus className="w-6 h-6 " /> },
     { name: "Crecimiento", icon: <Leaf className="w-6 h-6 " /> },
     { name: "Produccion", icon: <Apple className="w-6 h-6" /> },
     { name: "Anomalias", icon: <TriangleAlert className="w-6 h-6" /> },
