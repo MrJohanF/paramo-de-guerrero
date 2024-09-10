@@ -1,3 +1,5 @@
+// PlantHealthDashboard.js
+
 "use client";
 
 import React, { useState } from "react";
@@ -20,12 +22,15 @@ import {
   AlertTriangle,
   PlusCircle,
   Home,
+  Menu,
+  X,
 } from "lucide-react";
 import TablePaginationActions from "./Table";
 
 const PlantHealthDashboard = () => {
   const [plantStatus, setPlantStatus] = useState("healthy");
   const [activeSection, setActiveSection] = useState("Dashboard");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const sidebarOptions = [
     { name: "Dashboard", icon: <Home className="w-6 h-6" /> },
@@ -37,6 +42,50 @@ const PlantHealthDashboard = () => {
     { name: "Estado de plantas", icon: <Droplet className="w-6 h-6" /> },
     { name: "Reportes", icon: <ChartLine className="w-6 h-6" /> },
   ];
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  const sidebarVariants = {
+    open: {
+      x: 0,
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 30,
+      },
+    },
+    closed: {
+      x: "-100%",
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 30,
+      },
+    },
+  };
+
+  const menuItemVariants = {
+    open: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 30,
+      },
+    },
+    closed: {
+      opacity: 0,
+      y: 20,
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 30,
+      },
+    },
+  };
 
   const renderForm = (fields) => (
     <motion.form
@@ -334,40 +383,95 @@ const PlantHealthDashboard = () => {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100">
-      {/* Sidebar */}
-      <div className="w-64 bg-white shadow-lg">
-        <div className="p-6">
-          <h2 className="text-2xl font-bold mb-6 text-green-600">
-            Rastreador de salud vegetal
-          </h2>
-          <nav>
-            {sidebarOptions.map((option, index) => (
-              <a
-                key={index}
-                href="#"
-                className={`flex items-center p-3 mb-2 text-gray-700 hover:bg-green-100 rounded-lg transition-colors duration-300 ${
-                  activeSection === option.name
-                    ? "bg-green-100 text-green-700"
-                    : ""
-                }`}
-                onClick={() => setActiveSection(option.name)}
-              >
-                {React.cloneElement(option.icon, { className: "w-6 h-6 mr-3" })}
-                <span>{option.name}</span>
-              </a>
-            ))}
-          </nav>
-        </div>
+    <div className="flex flex-col md:flex-row h-screen bg-gray-100">
+      {/* Mobile Header */}
+      <div className="md:hidden bg-white p-4 flex justify-between items-center">
+        <h2 className="text-xl font-bold text-green-600">
+          Rastreador de salud vegetal
+        </h2>
+        <motion.button
+          onClick={toggleSidebar}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+        >
+          {isSidebarOpen ? (
+            <X className="w-6 h-6 text-gray-700" />
+          ) : (
+            <Menu className="w-6 h-6 text-gray-700" />
+          )}
+        </motion.button>
       </div>
 
+      {/* Sidebar */}
+      <AnimatePresence>
+        {(isSidebarOpen || window.innerWidth >= 768) && (
+          <motion.div
+            initial="closed"
+            animate="open"
+            exit="closed"
+            variants={sidebarVariants}
+            className="w-full md:w-64 bg-white shadow-lg overflow-y-auto fixed md:static top-0 left-0 h-full z-50"
+          >
+            <div className="p-6">
+              <h2 className="text-2xl font-bold mb-6 text-green-600 hidden md:block">
+                Rastreador de salud vegetal
+              </h2>
+              <nav>
+                {sidebarOptions.map((option, index) => (
+                  <motion.a
+                    key={index}
+                    href="#"
+                    variants={menuItemVariants}
+                    initial="closed"
+                    animate="open"
+                    exit="closed"
+                    custom={index}
+                    className={`flex items-center p-3 mb-2 text-gray-700 hover:bg-green-100 rounded-lg transition-colors duration-300 ${
+                      activeSection === option.name
+                        ? "bg-green-100 text-green-700"
+                        : ""
+                    }`}
+                    onClick={() => {
+                      setActiveSection(option.name);
+                      setIsSidebarOpen(false);
+                    }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    {React.cloneElement(option.icon, {
+                      className: "w-6 h-6 mr-3",
+                    })}
+                    <span>{option.name}</span>
+                  </motion.a>
+                ))}
+              </nav>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Main Content */}
-      <div className="flex-1 p-8 overflow-auto">
+      <div className="flex-1 p-4 md:p-8 overflow-auto">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold mb-6 text-gray-800">
+          <motion.h2
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="text-2xl md:text-3xl font-bold mb-6 text-gray-800"
+          >
             {activeSection}
-          </h2>
-          {renderContent()}
+          </motion.h2>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeSection}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.5 }}
+            >
+              {renderContent()}
+            </motion.div>
+          </AnimatePresence>
         </div>
       </div>
     </div>
