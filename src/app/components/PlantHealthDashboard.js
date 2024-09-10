@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import { TextField, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 import {
-  CirclePlus,
   Flower2,
   Leaf,
   Droplet,
@@ -11,31 +10,26 @@ import {
   Thermometer,
   Bug,
   Apple,
-  TriangleAlert,
+  AlertTriangle,
   PlusCircle,
+  Home,
 } from "lucide-react";
 
 const PlantHealthDashboard = () => {
   const [plantStatus, setPlantStatus] = useState("healthy");
-  const [activeSection, setActiveSection] = useState("Plantas");
-
-  const mainOptions = [
-    { name: "Water", icon: <Droplet className="w-6 h-6" /> },
-    { name: "Sunlight", icon: <Sun className="w-6 h-6" /> },
-    { name: "Temperature", icon: <Thermometer className="w-6 h-6" /> },
-    { name: "Pests", icon: <Bug className="w-6 h-6" /> },
-  ];
+  const [activeSection, setActiveSection] = useState("Dashboard");
 
   const sidebarOptions = [
+    { name: "Dashboard", icon: <Home className="w-6 h-6" /> },
     { name: "Plantas", icon: <Flower2 className="w-6 h-6" /> },
     { name: "Crecimiento", icon: <Leaf className="w-6 h-6" /> },
     { name: "Produccion", icon: <Apple className="w-6 h-6" /> },
-    { name: "Anomalias", icon: <TriangleAlert className="w-6 h-6" /> },
+    { name: "Anomalias", icon: <AlertTriangle className="w-6 h-6" /> },
     { name: "Sensores", icon: <PlusCircle className="w-6 h-6" /> },
   ];
 
   const renderForm = (fields) => (
-    <form className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <form className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {fields.map((field, index) => (
         <FormControl key={index} fullWidth variant="outlined" className="mb-4">
           {field.type === "select" ? (
@@ -62,7 +56,7 @@ const PlantHealthDashboard = () => {
       ))}
       <button
         type="submit"
-        className="col-span-2 mt-4 py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+        className="col-span-2 mt-6 py-3 px-6 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors duration-300 shadow-md"
       >
         Guardar
       </button>
@@ -71,15 +65,35 @@ const PlantHealthDashboard = () => {
 
   const renderContent = () => {
     switch (activeSection) {
+      case "Dashboard":
+        return (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {sidebarOptions.slice(1).map((option, index) => (
+              <div key={index} className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-xl font-semibold">{option.name}</h3>
+                  {React.cloneElement(option.icon, { className: "w-8 h-8 text-green-500" })}
+                </div>
+                <p className="text-gray-600">Resumen de {option.name.toLowerCase()}</p>
+                <button
+                  onClick={() => setActiveSection(option.name)}
+                  className="mt-4 py-2 px-4 bg-green-100 text-green-700 rounded-md hover:bg-green-200 transition-colors duration-300"
+                >
+                  Ver detalles
+                </button>
+              </div>
+            ))}
+          </div>
+        );
       case "Plantas":
         return (
-          <div className="mt-8 bg-white p-6 rounded-lg shadow">
-            <h3 className="text-lg font-semibold mb-4 text-gray-600">Registro de Planta</h3>
+          <div className="bg-white p-6 rounded-lg shadow-md">
+            <h3 className="text-2xl font-semibold mb-6">Registro de Planta</h3>
             {renderForm([
               { name: "Código", type: "text" },
               { name: "Especie", type: "text" },
               { name: "Ubicación", type: "text" },
-              { name: "Estado Actual", type: "text" },
+              { name: "Estado Actual", type: "select", options: ["Saludable", "En crecimiento", "En producción", "Con anomalías"] },
               { name: "Fecha Estado Actual", type: "date" },
               { name: "Condiciones Iniciales", type: "text" },
               { name: "Fecha Creación", type: "date" },
@@ -89,12 +103,12 @@ const PlantHealthDashboard = () => {
         );
       case "Crecimiento":
         return (
-          <div className="mt-8 bg-white p-6 rounded-lg shadow">
-            <h3 className="text-lg font-semibold mb-4 text-gray-600">Registro de Crecimiento</h3>
+          <div className="bg-white p-6 rounded-lg shadow-md">
+            <h3 className="text-2xl font-semibold mb-6">Registro de Crecimiento</h3>
             {renderForm([
               { name: "ID Planta", type: "number" },
-              { name: "Altura", type: "number" },
-              { name: "Diámetro", type: "number" },
+              { name: "Altura (cm)", type: "number" },
+              { name: "Diámetro (cm)", type: "number" },
               { name: "Número de Hojas", type: "number" },
               { name: "Fecha Medición", type: "date" },
             ])}
@@ -102,21 +116,21 @@ const PlantHealthDashboard = () => {
         );
       case "Produccion":
         return (
-          <div className="mt-8 bg-white p-6 rounded-lg shadow">
-            <h3 className="text-lg font-semibold mb-4 text-gray-600">Registro de Producción</h3>
+          <div className="bg-white p-6 rounded-lg shadow-md">
+            <h3 className="text-2xl font-semibold mb-6">Registro de Producción</h3>
             {renderForm([
               { name: "ID Planta", type: "number" },
-              { name: "Cantidad", type: "number" },
+              { name: "Cantidad (kg)", type: "number" },
               { name: "Fecha Cosecha", type: "date" },
-              { name: "Calidad", type: "text" },
+              { name: "Calidad", type: "select", options: ["Excelente", "Buena", "Regular", "Mala"] },
               { name: "Destino", type: "text" },
             ])}
           </div>
         );
       case "Anomalias":
         return (
-          <div className="mt-8 bg-white p-6 rounded-lg shadow">
-            <h3 className="text-lg font-semibold mb-4 text-gray-600">Registro de Anomalías</h3>
+          <div className="bg-white p-6 rounded-lg shadow-md">
+            <h3 className="text-2xl font-semibold mb-6">Registro de Anomalías</h3>
             {renderForm([
               { name: "ID Planta", type: "number" },
               { name: "Descripción", type: "text" },
@@ -127,11 +141,11 @@ const PlantHealthDashboard = () => {
         );
       case "Sensores":
         return (
-          <div className="mt-8 bg-white p-6 rounded-lg shadow">
-            <h3 className="text-lg font-semibold mb-4 text-gray-600" >Registro de Sensores</h3>
+          <div className="bg-white p-6 rounded-lg shadow-md">
+            <h3 className="text-2xl font-semibold mb-6">Registro de Sensores</h3>
             {renderForm([
               { name: "Nombre Sensor", type: "text" },
-              { name: "Tipo", type: "text" },
+              { name: "Tipo", type: "select", options: ["Temperatura", "Humedad", "pH", "Luz"] },
               { name: "Ubicación", type: "text" },
               { name: "Fecha Instalación", type: "date" },
             ])}
@@ -146,20 +160,20 @@ const PlantHealthDashboard = () => {
     <div className="flex h-screen bg-gray-100">
       {/* Sidebar */}
       <div className="w-64 bg-white shadow-lg">
-        <div className="p-4">
-          <h2 className="text-xl font-bold mb-4 ">Plant Health Tracker</h2>
+        <div className="p-6">
+          <h2 className="text-2xl font-bold mb-6 text-green-600">Plant Health Tracker</h2>
           <nav>
             {sidebarOptions.map((option, index) => (
               <a
                 key={index}
                 href="#"
-                className={`flex items-center p-2 text-gray-600 hover:bg-gray-100 rounded ${
-                  activeSection === option.name ? "bg-gray-100" : ""
+                className={`flex items-center p-3 mb-2 text-gray-700 hover:bg-green-100 rounded-lg transition-colors duration-300 ${
+                  activeSection === option.name ? "bg-green-100 text-green-700" : ""
                 }`}
                 onClick={() => setActiveSection(option.name)}
               >
-                {option.icon}
-                <span className="ml-2">{option.name}</span>
+                {React.cloneElement(option.icon, { className: "w-6 h-6 mr-3" })}
+                <span>{option.name}</span>
               </a>
             ))}
           </nav>
@@ -168,8 +182,8 @@ const PlantHealthDashboard = () => {
 
       {/* Main Content */}
       <div className="flex-1 p-8 overflow-auto">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl font-bold mb-4">{activeSection}</h2>
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl font-bold mb-6 text-gray-800">{activeSection}</h2>
           {renderContent()}
         </div>
       </div>
