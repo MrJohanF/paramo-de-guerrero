@@ -63,6 +63,8 @@ const PlantHealthDashboard = () => {
         type: "spring",
         stiffness: 300,
         damping: 30,
+        when: "beforeChildren",
+        staggerChildren: 0.1,
       },
     },
     closed: {
@@ -71,6 +73,8 @@ const PlantHealthDashboard = () => {
         type: "spring",
         stiffness: 300,
         damping: 30,
+        when: "afterChildren",
+        staggerChildren: 0.1,
       },
     },
   };
@@ -417,7 +421,7 @@ const PlantHealthDashboard = () => {
 
       {/* Sidebar */}
       <AnimatePresence>
-      {(isSidebarOpen || (typeof window !== 'undefined' && window.innerWidth >= 768)) && (
+        {(isSidebarOpen || (typeof window !== 'undefined' && window.innerWidth >= 768)) && (
           <motion.div
             initial="closed"
             animate="open"
@@ -430,33 +434,34 @@ const PlantHealthDashboard = () => {
                 Rastreador de salud vegetal
               </h2>
               <nav>
-                {sidebarOptions.map((option, index) => (
-                  <motion.a
-                    key={index}
-                    href="#"
-                    variants={menuItemVariants}
-                    initial="closed"
-                    animate="open"
-                    exit="closed"
-                    custom={index}
-                    className={`flex items-center p-3 mb-2 text-gray-700 hover:bg-green-100 rounded-lg transition-colors duration-300 ${
-                      activeSection === option.name
-                        ? "bg-green-100 text-green-700"
-                        : ""
-                    }`}
-                    onClick={() => {
-                      setActiveSection(option.name);
-                      setIsSidebarOpen(false);
-                    }}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    {React.cloneElement(option.icon, {
-                      className: "w-6 h-6 mr-3",
-                    })}
-                    <span>{option.name}</span>
-                  </motion.a>
-                ))}
+                <AnimatePresence>
+                  {sidebarOptions.map((option, index) => (
+                    <motion.a
+                      key={option.name}
+                      href="#"
+                      variants={menuItemVariants}
+                      initial="closed"
+                      animate="open"
+                      exit="closed"
+                      className={`flex items-center p-3 mb-2 text-gray-700 hover:bg-green-100 rounded-lg transition-colors duration-300 ${
+                        activeSection === option.name
+                          ? "bg-green-100 text-green-700"
+                          : ""
+                      }`}
+                      onClick={() => {
+                        setActiveSection(option.name);
+                        setIsSidebarOpen(false);
+                      }}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      {React.cloneElement(option.icon, {
+                        className: "w-6 h-6 mr-3",
+                      })}
+                      <span>{option.name}</span>
+                    </motion.a>
+                  ))}
+                </AnimatePresence>
               </nav>
             </div>
           </motion.div>
@@ -490,5 +495,4 @@ const PlantHealthDashboard = () => {
     </div>
   );
 };
-
 export default PlantHealthDashboard;
