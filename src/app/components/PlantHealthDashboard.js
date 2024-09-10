@@ -235,9 +235,7 @@ const PlantHealthDashboard = () => {
             </h3>
             {renderForm([
               { name: "ID Planta", type: "number" },
-              { name: "Descripción", type: "text" },
-              { name: "Fecha Detección", type: "date" },
-              { name: "Tratamiento Sugerido", type: "text" },
+              { name: "Ubicación", type: "text" },
             ])}
           </div>
         );
