@@ -40,7 +40,7 @@ This repository provides a quick setup for a modern web application stack, integ
 ### Clone the Repository
 
 ```
-git clone https://github.com/MrJohanF/docker-phpmyadmin-ready-to-use.git
+git clone https://github.com/MrJohanF/paramo-de-guerrero.git
 ```
 ```
 cd docker-phpmyadmin-ready-to-use
