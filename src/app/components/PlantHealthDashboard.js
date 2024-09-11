@@ -228,7 +228,7 @@ const PlantHealthDashboard = () => {
       case "Plantas":
         return (
           <div className="bg-white p-6 rounded-lg shadow-md">
-            <h3 className="text-2xl font-semibold mb-6 text-gray-400">
+            <h3 className="text-2xl font-semibold mb-6 text-gray-800">
               Registro de Planta
             </h3>
             {renderForm([
@@ -266,7 +266,7 @@ const PlantHealthDashboard = () => {
       case "Crecimiento":
         return (
           <div className="bg-white p-6 rounded-lg shadow-md">
-            <h3 className="text-2xl font-semibold mb-6 text-gray-400">
+            <h3 className="text-2xl font-semibold mb-6 text-gray-800">
               Registro de Crecimiento
             </h3>
             {renderForm([
@@ -292,7 +292,7 @@ const PlantHealthDashboard = () => {
       case "Produccion":
         return (
           <div className="bg-white p-6 rounded-lg shadow-md">
-            <h3 className="text-2xl font-semibold mb-6 text-gray-400">
+            <h3 className="text-2xl font-semibold mb-6 text-gray-800">
               Registro de Producción
             </h3>
             {renderForm([
@@ -322,7 +322,7 @@ const PlantHealthDashboard = () => {
       case "Anomalias":
         return (
           <div className="bg-white p-6 rounded-lg shadow-md">
-            <h3 className="text-2xl font-semibold mb-6 text-gray-400">
+            <h3 className="text-2xl font-semibold mb-6 text-gray-800">
               Registro de Anomalías
             </h3>
             {renderForm([
@@ -347,7 +347,7 @@ const PlantHealthDashboard = () => {
       case "Sensores":
         return (
           <div className="bg-white p-6 rounded-lg shadow-md">
-            <h3 className="text-2xl font-semibold mb-6 text-gray-400">
+            <h3 className="text-2xl font-semibold mb-6 text-gray-800">
               Registro de Sensores
             </h3>
             {renderForm([
@@ -375,7 +375,7 @@ const PlantHealthDashboard = () => {
       case "Estado de plantas":
         return (
           <div className="bg-white p-6 rounded-lg shadow-md">
-            <h3 className="text-2xl font-semibold mb-6 text-gray-400">
+            <h3 className="text-2xl font-semibold mb-6 text-gray-800">
               Consultar Estado de Plantas
             </h3>
             {renderForm([
@@ -402,7 +402,7 @@ const PlantHealthDashboard = () => {
       case "Reportes":
         return (
           <div className="bg-white p-6 rounded-lg shadow-md">
-            <h3 className="text-2xl font-semibold mb-6 text-gray-400">
+            <h3 className="text-2xl font-semibold mb-6 text-gray-800">
               Reportes de Anomalías
             </h3>
             {renderForm([
