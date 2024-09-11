@@ -1,9 +1,9 @@
-import PlantHealthDashboard from './components/PlantHealthDashboard';
+import App from './components/App';
 
 export default function Home() {
   return (
     <main className="min-h-screen">
-      <PlantHealthDashboard />
+      <App />
     </main>
   );
 }
