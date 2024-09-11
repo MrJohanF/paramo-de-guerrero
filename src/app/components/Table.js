@@ -17,24 +17,24 @@ import {
 } from '@mui/material';
 
 const columns = [
-  { id: 'name', label: 'Name', minWidth: 170 },
-  { id: 'code', label: 'ISO\u00a0Code', minWidth: 100 },
+  { id: 'codigo', label: 'Codigo', minWidth: 170 },
+  { id: 'especie', label: 'Especie', minWidth: 100 },
   {
-    id: 'population',
-    label: 'Population',
+    id: 'ubicacion',
+    label: 'Ubicacion',
     minWidth: 170,
     align: 'right',
     format: (value) => value.toLocaleString('en-US'),
   },
   {
-    id: 'size',
-    label: 'Size\u00a0(km\u00b2)',
+    id: 'estado_actual',
+    label: 'Estado Actual',
     minWidth: 170,
     align: 'right',
     format: (value) => value.toLocaleString('en-US'),
   },
   {
-    id: 'density',
+    id: 'condiciones_iniciales',
     label: 'Density',
     minWidth: 170,
     align: 'right',
@@ -42,9 +42,9 @@ const columns = [
   },
 ];
 
-function createData(name, code, population, size) {
-  const density = population / size;
-  return { name, code, population, size, density };
+function createData(codigo, especie, ubicacion, estado_actual) {
+  const condiciones_iniciales = ubicacion / estado_actual;
+  return { codigo, especie, ubicacion, estado_actual, condiciones_iniciales };
 }
 
 
