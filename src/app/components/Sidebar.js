@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sun, Moon } from 'lucide-react';
+import { Sun, Moon, LogOut } from 'lucide-react';
 import { useTheme } from './ThemeContext';
 import { sidebarOptions } from './SidebarOptions';
 
@@ -40,7 +40,7 @@ const menuItemVariants = {
   },
 };
 
-export const Sidebar = ({ isOpen, setIsOpen, activeSection, setActiveSection }) => {
+export const Sidebar = ({ isOpen, setIsOpen, activeSection, setActiveSection, onLogout }) => {
   const { isDarkMode, toggleTheme } = useTheme();
 
   return (
@@ -95,6 +95,17 @@ export const Sidebar = ({ isOpen, setIsOpen, activeSection, setActiveSection }) 
             >
               {isDarkMode ? <Sun className="w-6 h-6 mr-2" /> : <Moon className="w-6 h-6 mr-2" />}
               {isDarkMode ? 'Modo Claro' : 'Modo Oscuro'}
+            </motion.button>
+            <motion.button
+              onClick={onLogout}
+              className={`mt-4 p-3 w-full flex items-center justify-center ${
+                isDarkMode ? 'bg-red-600 text-white' : 'bg-red-500 text-white'
+              } rounded-lg transition-colors duration-300`}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <LogOut className="w-6 h-6 mr-2" />
+              Cerrar sesión
             </motion.button>
           </div>
         </motion.div>

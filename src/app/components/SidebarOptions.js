@@ -1,3 +1,5 @@
+//SideBarOptions.js
+
 import React from 'react';
 import { Home, Flower2, Leaf, Apple, AlertTriangle, PlusCircle, Droplet, ChartLine } from 'lucide-react';
 
