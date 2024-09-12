@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from "framer-motion";
 import { FormField } from './FormField';
 import { Snackbar, Alert } from "@mui/material";
@@ -15,6 +15,15 @@ const SensorRegistrationSection = ({ isDarkMode }) => {
     message: "",
     severity: "success",
   });
+
+  const [token, setToken] = useState("");
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem('token');
+    if (storedToken) {
+      setToken(storedToken);
+    }
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -33,6 +42,7 @@ const SensorRegistrationSection = ({ isDarkMode }) => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
           },
           body: JSON.stringify(formData),
         }
