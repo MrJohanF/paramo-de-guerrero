@@ -60,29 +60,45 @@ const StyledCard = styled(Card)(({ theme, isDarkMode }) => ({
   marginBottom: '1rem',
 }));
 
-const ResponsiveTable = () => {
+const ResponsiveTable = ({ token }) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const isMobile = useMediaQuery('(max-width:600px)');
   const { isDarkMode } = useTheme();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('https://backend-hackaton-production-f38b.up.railway.app/v1/api/plants');
+        if (!token) {
+          throw new Error('No authentication token available');
+        }
+        const response = await fetch('https://backend-hackaton-production-f38b.up.railway.app/v1/api/plants', {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
         const data = await response.json();
+        if (!Array.isArray(data)) {
+          throw new Error('Data is not an array');
+        }
         setRows(data);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
+        setError(error.message);
         setLoading(false);
       }
     };
 
     fetchData();
-  }, []);
+  }, [token]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -149,8 +165,7 @@ const ResponsiveTable = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row) => (
                   <StyledTableRow hover tabIndex={-1} key={row.id} isDarkMode={isDarkMode}>
                     {columns.map((column) => {

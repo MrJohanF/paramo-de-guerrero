@@ -26,9 +26,9 @@ const LoginComponent = ({ onLogin }) => {
         if (response.ok) {
           const data = await response.json();
           localStorage.setItem('token', data.token);
-          await fetchUserInfo();
-          await fetchUsers();
-          onLogin();
+          await fetchUserInfo(data.token);
+          await fetchUsers(data.token);
+          onLogin(data.token); 
         } else {
           setError('Credenciales inválidas');
         }
@@ -40,11 +40,11 @@ const LoginComponent = ({ onLogin }) => {
     }
   };
 
-  const fetchUserInfo = async () => {
+  const fetchUserInfo = async (token) => {
     try {
       const response = await fetch('https://backend-hackaton-production-f38b.up.railway.app/v1/api/auth/info-user', {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Authorization': `Bearer ${token}`,
         },
       });
 
@@ -59,11 +59,11 @@ const LoginComponent = ({ onLogin }) => {
     }
   };
 
-  const fetchUsers = async () => {
+  const fetchUsers = async (token) => {
     try {
       const response = await fetch('https://backend-hackaton-production-f38b.up.railway.app/v1/api/users', {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Authorization': `Bearer ${token}`,
         },
       });
 
@@ -81,8 +81,8 @@ const LoginComponent = ({ onLogin }) => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      fetchUserInfo();
-      fetchUsers();
+      fetchUserInfo(token);
+      fetchUsers(token);
     }
   }, []);
 
