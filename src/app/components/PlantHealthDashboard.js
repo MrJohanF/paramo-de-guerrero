@@ -7,7 +7,6 @@ import dynamic from 'next/dynamic';
 import { useTheme } from './ThemeContext';
 import { Sidebar } from './Sidebar';
 import { FormField } from './FormField';
-import { Snackbar, Alert } from "@mui/material";
 import { DashboardSection } from './DashboardSection';
 import PlantRegistrationSection from './PlantRegistrationSection';
 import GrowthRegistrationSection from './GrowthRegistrationSection';
