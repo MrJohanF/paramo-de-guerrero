@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from "framer-motion";
 import { FormField } from './FormField';
-import { Snackbar, Alert } from "@mui/material";
+import { Snackbar, Alert, Box } from "@mui/material";
 
 const SensorRegistrationSection = ({ isDarkMode }) => {
   const [formData, setFormData] = useState({
@@ -15,7 +15,6 @@ const SensorRegistrationSection = ({ isDarkMode }) => {
     message: "",
     severity: "success",
   });
-
   const [token, setToken] = useState("");
 
   useEffect(() => {
@@ -72,55 +71,53 @@ const SensorRegistrationSection = ({ isDarkMode }) => {
     }
   };
 
-  const renderForm = (fields) => (
-    <motion.form
-      onSubmit={handleSubmit}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.5 }}
-      className="grid grid-cols-1 md:grid-cols-2 gap-6"
-    >
-      {fields.map((field, index) => (
-        <FormField
-          key={index}
-          field={{
-            ...field,
-            value: formData[field.name],
-            onChange: handleChange,
-          }}
-          index={index}
-        />
-      ))}
-      <motion.button
-        type="submit"
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        className={`col-span-2 mt-6 py-3 px-6 ${
-          isDarkMode ? 'bg-green-600 hover:bg-green-700' : 'bg-green-500 hover:bg-green-600'
-        } text-white rounded-lg transition-colors duration-300 shadow-md`}
-      >
-        Guardar
-      </motion.button>
-    </motion.form>
-  );
+  const formFields = [
+    { name: "nombre", type: "text", label: "Nombre Sensor" },
+    {
+      name: "tipo",
+      type: "select",
+      label: "Tipo",
+      options: ["Temperatura", "Humedad", "pH", "Luz"],
+    },
+    { name: "ubicacion", type: "text", label: "Ubicación" },
+    { name: "fecha_instalacion", type: "date", label: "Fecha Instalación" },
+  ];
 
   return (
-    <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} p-6 rounded-lg shadow-md`}>
-      <h3 className={`text-2xl font-semibold mb-6 ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
+    <Box className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} p-4 sm:p-6 rounded-lg shadow-md`}>
+      <h3 className={`text-xl sm:text-2xl font-semibold mb-4 sm:mb-6 ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
         Registro de Sensor
       </h3>
-      {renderForm([
-        { name: "nombre", type: "text", label: "Nombre Sensor" },
-        {
-          name: "tipo",
-          type: "select",
-          label: "Tipo",
-          options: ["Temperatura", "Humedad", "pH", "Luz"],
-        },
-        { name: "ubicacion", type: "text", label: "Ubicación" },
-        { name: "fecha_instalacion", type: "date", label: "Fecha Instalación" },
-      ])}
+      <motion.form
+        onSubmit={handleSubmit}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -20 }}
+        transition={{ duration: 0.5 }}
+        className="grid grid-cols-1 sm:grid-cols-2 gap-4"
+      >
+        {formFields.map((field, index) => (
+          <FormField
+            key={field.name}
+            field={{
+              ...field,
+              value: formData[field.name],
+              onChange: handleChange,
+            }}
+            index={index}
+          />
+        ))}
+        <motion.button
+          type="submit"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className={`col-span-1 sm:col-span-2 mt-4 sm:mt-6 py-2 sm:py-3 px-4 sm:px-6 ${
+            isDarkMode ? 'bg-green-600 hover:bg-green-700' : 'bg-green-500 hover:bg-green-600'
+          } text-white rounded-lg transition-colors duration-300 shadow-md text-sm sm:text-base`}
+        >
+          Guardar
+        </motion.button>
+      </motion.form>
       <Snackbar
         open={snackbar.open}
         autoHideDuration={6000}
@@ -134,7 +131,7 @@ const SensorRegistrationSection = ({ isDarkMode }) => {
           {snackbar.message}
         </Alert>
       </Snackbar>
-    </div>
+    </Box>
   );
 };
 

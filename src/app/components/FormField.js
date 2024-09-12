@@ -1,8 +1,5 @@
-// FormField.js
-
 import React from "react";
 import {
-  Box,
   TextField,
   Select,
   MenuItem,
@@ -60,8 +57,9 @@ export const FormField = ({ field, index }) => {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.2, delay: index * 0.03 }}
+      className="w-full"
     >
-      <FormControl fullWidth variant="outlined" className="mb-3">
+      <FormControl fullWidth variant="outlined" className="mb-2 sm:mb-3">
         {field.type === "select" ? (
           <>
             <InputLabel>{field.label}</InputLabel>

@@ -10,15 +10,15 @@ import { DashboardSection } from "./DashboardSection";
 import PlantRegistrationSection from "./PlantRegistrationSection";
 import GrowthRegistrationSection from "./GrowthRegistrationSection";
 import ProductionRegistrationSection from "./ProductionRegistrationSection";
-import AnomalyRegistrationSection from './AnomalyRegistrationSection';
-import SensorRegistrationSection from './SensorRegistrationSection';
-import PlantStatusSection from './PlantStatusSection';
+import AnomalyRegistrationSection from "./AnomalyRegistrationSection";
+import SensorRegistrationSection from "./SensorRegistrationSection";
+import PlantStatusSection from "./PlantStatusSection";
 import LoginComponent from "./LoginComponent";
-
 
 const PlantHealthDashboard = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [token, setToken] = useState("");
+  const [userInfo, setUserInfo] = useState(null);
   const [plantStatus, setPlantStatus] = useState("healthy");
   const [activeSection, setActiveSection] = useState("Dashboard");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -27,23 +27,45 @@ const PlantHealthDashboard = () => {
 
   useEffect(() => {
     setIsMounted(true);
-    const storedToken = localStorage.getItem('token');
+    const storedToken = localStorage.getItem("token");
     if (storedToken) {
       setToken(storedToken);
       setIsLoggedIn(true);
+      fetchUserInfo(storedToken);
     }
   }, []);
 
-  const handleLogin = (newToken) => {
+
+  const fetchUserInfo = async (token) => {
+    try {
+      const response = await fetch('https://backend-hackaton-production-f38b.up.railway.app/v1/api/auth/info-user', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setUserInfo(data);
+      } else {
+        console.error('Error al obtener información del usuario');
+      }
+    } catch (error) {
+      console.error('Error en la solicitud de información del usuario', error);
+    }
+  };
+
+  const handleLogin = (newToken, newUserInfo) => {
     setToken(newToken);
-    localStorage.setItem('token', newToken);
+    setUserInfo(newUserInfo);
+    localStorage.setItem("token", newToken);
     setIsLoggedIn(true);
   };
 
   const handleLogout = () => {
     setIsLoggedIn(false);
     setToken("");
-    localStorage.removeItem('token');
+    setUserInfo(null);
+    localStorage.removeItem("token");
     setActiveSection("Dashboard");
   };
 
@@ -64,17 +86,32 @@ const PlantHealthDashboard = () => {
   const renderContent = () => {
     switch (activeSection) {
       case "Dashboard":
-        return <DashboardSection setActiveSection={setActiveSection} token={token} />;
+        return (
+          <DashboardSection setActiveSection={setActiveSection} token={token} />
+        );
       case "Plantas":
-        return <PlantRegistrationSection isDarkMode={isDarkMode} token={token} />;
+        return (
+          <PlantRegistrationSection isDarkMode={isDarkMode} token={token} />
+        );
       case "Crecimiento":
-        return <GrowthRegistrationSection isDarkMode={isDarkMode} token={token} />;
+        return (
+          <GrowthRegistrationSection isDarkMode={isDarkMode} token={token} />
+        );
       case "Produccion":
-        return <ProductionRegistrationSection isDarkMode={isDarkMode} token={token} />;
+        return (
+          <ProductionRegistrationSection
+            isDarkMode={isDarkMode}
+            token={token}
+          />
+        );
       case "Anomalias":
-        return <AnomalyRegistrationSection isDarkMode={isDarkMode} token={token} />;
+        return (
+          <AnomalyRegistrationSection isDarkMode={isDarkMode} token={token} />
+        );
       case "Sensores":
-        return <SensorRegistrationSection isDarkMode={isDarkMode} token={token} />;
+        return (
+          <SensorRegistrationSection isDarkMode={isDarkMode} token={token} />
+        );
       case "Estado de plantas":
         return <PlantStatusSection isDarkMode={isDarkMode} token={token} />;
       case "Reportes":
@@ -121,7 +158,11 @@ const PlantHealthDashboard = () => {
   }
 
   if (!isLoggedIn) {
-    return <LoginComponent onLogin={handleLogin} />;
+    return <LoginComponent onLogin={(token, userInfo) => {
+      setToken(token);
+      setUserInfo(userInfo);
+      setIsLoggedIn(true);
+    }} />;
   }
 
   return (
@@ -169,6 +210,7 @@ const PlantHealthDashboard = () => {
         activeSection={activeSection}
         setActiveSection={setActiveSection}
         onLogout={handleLogout}
+        userInfo={userInfo} // Añade esta línea
       />
 
       <div className="flex-1 p-4 md:p-8 overflow-auto">

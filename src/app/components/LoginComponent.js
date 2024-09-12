@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from './ThemeContext';
 import { Leaf, Lock, User } from 'lucide-react';
@@ -8,7 +8,6 @@ const LoginComponent = ({ onLogin }) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [userInfo, setUserInfo] = useState(null);
-  const [users, setUsers] = useState([]);
   const { isDarkMode } = useTheme();
 
   const handleSubmit = async (e) => {
@@ -26,9 +25,8 @@ const LoginComponent = ({ onLogin }) => {
         if (response.ok) {
           const data = await response.json();
           localStorage.setItem('token', data.token);
-          await fetchUserInfo(data.token);
-          await fetchUsers(data.token);
-          onLogin(data.token); 
+          const userInfoData = await fetchUserInfo(data.token);
+          onLogin(data.token, userInfoData);
         } else {
           setError('Credenciales inválidas');
         }
@@ -51,6 +49,7 @@ const LoginComponent = ({ onLogin }) => {
       if (response.ok) {
         const data = await response.json();
         setUserInfo(data);
+        return data;
       } else {
         console.error('Error al obtener información del usuario');
       }
@@ -58,33 +57,6 @@ const LoginComponent = ({ onLogin }) => {
       console.error('Error en la solicitud de información del usuario', error);
     }
   };
-
-  const fetchUsers = async (token) => {
-    try {
-      const response = await fetch('https://backend-hackaton-production-f38b.up.railway.app/v1/api/users', {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setUsers(data);
-      } else {
-        console.error('Error al obtener la lista de usuarios');
-      }
-    } catch (error) {
-      console.error('Error en la solicitud de lista de usuarios', error);
-    }
-  };
-
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      fetchUserInfo(token);
-      fetchUsers(token);
-    }
-  }, []);
 
   return (
     <div className={`flex items-center justify-center min-h-screen bg-gradient-to-br ${isDarkMode ? 'from-green-900 to-gray-900' : 'from-green-100 to-blue-100'}`}>
@@ -149,18 +121,6 @@ const LoginComponent = ({ onLogin }) => {
               Iniciar Sesión
             </motion.button>
           </form>
-        )}
-        {users.length > 0 && (
-          <div className={`mt-6 ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
-            <h3 className="text-xl font-semibold mb-2">Lista de usuarios</h3>
-            <ul>
-              {users.map((user, index) => (
-                <li key={index}>
-                  {user.username} - {user.role}
-                </li>
-              ))}
-            </ul>
-          </div>
         )}
       </motion.div>
     </div>
