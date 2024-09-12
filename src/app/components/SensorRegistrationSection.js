@@ -1,34 +1,20 @@
-// PlantRegistrationSection.js
-
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion } from "framer-motion";
 import { FormField } from './FormField';
 import { Snackbar, Alert } from "@mui/material";
 
-const PlantRegistrationSection = ({ isDarkMode }) => {
+const SensorRegistrationSection = ({ isDarkMode }) => {
   const [formData, setFormData] = useState({
-    codigo: "",
-    especie: "",
+    nombre: "",
+    tipo: "",
     ubicacion: "",
-    estado: "",
-    fecha_actual: "",
-    condiciones: "",
-    fecha_creacion: "",
-    tags: "",
+    fecha_instalacion: "",
   });
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
     severity: "success",
   });
-  const [token, setToken] = useState("");
-
-  useEffect(() => {
-    const storedToken = localStorage.getItem('token');
-    if (storedToken) {
-      setToken(storedToken);
-    }
-  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -42,12 +28,11 @@ const PlantRegistrationSection = ({ isDarkMode }) => {
     e.preventDefault();
     try {
       const response = await fetch(
-        "https://backend-hackaton-production-f38b.up.railway.app/v1/api/plants/create",
+        "https://backend-hackaton-production-f38b.up.railway.app/v1/api/sensor/create",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
           },
           body: JSON.stringify(formData),
         }
@@ -56,26 +41,22 @@ const PlantRegistrationSection = ({ isDarkMode }) => {
       if (response.ok) {
         setSnackbar({
           open: true,
-          message: "Planta registrada exitosamente",
+          message: "Sensor registrado exitosamente",
           severity: "success",
         });
         setFormData({
-          codigo: "",
-          especie: "",
+          nombre: "",
+          tipo: "",
           ubicacion: "",
-          estado: "",
-          fecha_actual: "",
-          condiciones: "",
-          fecha_creacion: "",
-          tags: "",
+          fecha_instalacion: "",
         });
       } else {
-        throw new Error("Error al registrar la planta");
+        throw new Error("Error al registrar el sensor");
       }
     } catch (error) {
       setSnackbar({
         open: true,
-        message: "Error al registrar la planta",
+        message: "Error al registrar el sensor",
         severity: "error",
       });
     }
@@ -117,27 +98,18 @@ const PlantRegistrationSection = ({ isDarkMode }) => {
   return (
     <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} p-6 rounded-lg shadow-md`}>
       <h3 className={`text-2xl font-semibold mb-6 ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
-        Registro de Planta
+        Registro de Sensor
       </h3>
       {renderForm([
-        { name: "codigo", type: "text", label: "Código" },
-        { name: "especie", type: "text", label: "Especie" },
-        { name: "ubicacion", type: "text", label: "Ubicación" },
+        { name: "nombre", type: "text", label: "Nombre Sensor" },
         {
-          name: "estado",
+          name: "tipo",
           type: "select",
-          label: "Estado",
-          options: [
-            "Saludable",
-            "En crecimiento",
-            "En producción",
-            "Con anomalías",
-          ],
+          label: "Tipo",
+          options: ["Temperatura", "Humedad", "pH", "Luz"],
         },
-        { name: "fecha_estado", type: "date", label: "Fecha de Estado" },
-        { name: "condiciones", type: "text", label: "Condiciones" },
-        { name: "fecha_creacion", type: "date", label: "Fecha de Creación" },
-        { name: "tags", type: "text", label: "Tags" },
+        { name: "ubicacion", type: "text", label: "Ubicación" },
+        { name: "fecha_instalacion", type: "date", label: "Fecha Instalación" },
       ])}
       <Snackbar
         open={snackbar.open}
@@ -156,4 +128,4 @@ const PlantRegistrationSection = ({ isDarkMode }) => {
   );
 };
 
-export default PlantRegistrationSection;
+export default SensorRegistrationSection;

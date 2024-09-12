@@ -12,12 +12,14 @@ import PlantRegistrationSection from "./PlantRegistrationSection";
 import GrowthRegistrationSection from "./GrowthRegistrationSection";
 import ProductionRegistrationSection from "./ProductionRegistrationSection";
 import AnomalyRegistrationSection from './AnomalyRegistrationSection';
+import SensorRegistrationSection from './SensorRegistrationSection';
 import LoginComponent from "./LoginComponent";
 
 const TablePaginationActions = dynamic(() => import("./Table"), { ssr: false });
 
 const PlantHealthDashboard = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [token, setToken] = useState("");
   const [plantStatus, setPlantStatus] = useState("healthy");
   const [activeSection, setActiveSection] = useState("Dashboard");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -26,14 +28,23 @@ const PlantHealthDashboard = () => {
 
   useEffect(() => {
     setIsMounted(true);
+    const storedToken = localStorage.getItem('token');
+    if (storedToken) {
+      setToken(storedToken);
+      setIsLoggedIn(true);
+    }
   }, []);
 
-  const handleLogin = () => {
+  const handleLogin = (newToken) => {
+    setToken(newToken);
+    localStorage.setItem('token', newToken);
     setIsLoggedIn(true);
   };
 
   const handleLogout = () => {
     setIsLoggedIn(false);
+    setToken("");
+    localStorage.removeItem('token');
     setActiveSection("Dashboard");
   };
 
@@ -54,53 +65,17 @@ const PlantHealthDashboard = () => {
   const renderContent = () => {
     switch (activeSection) {
       case "Dashboard":
-        return <DashboardSection setActiveSection={setActiveSection} />;
+        return <DashboardSection setActiveSection={setActiveSection} token={token} />;
       case "Plantas":
-        return <PlantRegistrationSection isDarkMode={isDarkMode} />;
+        return <PlantRegistrationSection isDarkMode={isDarkMode} token={token} />;
       case "Crecimiento":
-        return <GrowthRegistrationSection isDarkMode={isDarkMode} />;
+        return <GrowthRegistrationSection isDarkMode={isDarkMode} token={token} />;
       case "Produccion":
-        return <ProductionRegistrationSection isDarkMode={isDarkMode} />;
+        return <ProductionRegistrationSection isDarkMode={isDarkMode} token={token} />;
       case "Anomalias":
-        return <AnomalyRegistrationSection isDarkMode={isDarkMode} />;
+        return <AnomalyRegistrationSection isDarkMode={isDarkMode} token={token} />;
       case "Sensores":
-        return (
-          <div
-            className={`${
-              isDarkMode ? "bg-gray-800" : "bg-white"
-            } p-6 rounded-lg shadow-md`}
-          >
-            <h3
-              className={`text-2xl font-semibold mb-6 ${
-                isDarkMode ? "text-gray-200" : "text-gray-800"
-              }`}
-            >
-              Registro de Sensores
-            </h3>
-            {renderForm([
-              { name: "Nombre Sensor", type: "text" },
-              {
-                name: "Tipo",
-                type: "select",
-                options: ["Temperatura", "Humedad", "pH", "Luz"],
-              },
-              { name: "Ubicación", type: "text" },
-              { name: "Fecha Instalación", type: "date" },
-            ])}
-            <motion.button
-              type="submit"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className={`col-span-2 mt-6 py-3 px-6 ${
-                isDarkMode
-                  ? "bg-green-600 hover:bg-green-700"
-                  : "bg-green-500 hover:bg-green-600"
-              } text-white rounded-lg transition-colors duration-300 shadow-md`}
-            >
-              Guardar
-            </motion.button>
-          </div>
-        );
+        return <SensorRegistrationSection isDarkMode={isDarkMode} token={token} />;
       case "Estado de plantas":
         return (
           <div
