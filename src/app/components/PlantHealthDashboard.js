@@ -7,7 +7,10 @@ import dynamic from 'next/dynamic';
 import { useTheme } from './ThemeContext';
 import { Sidebar } from './Sidebar';
 import { FormField } from './FormField';
+import { Snackbar, Alert } from "@mui/material";
 import { DashboardSection } from './DashboardSection';
+import PlantRegistrationSection from './PlantRegistrationSection';
+import GrowthRegistrationSection from './GrowthRegistrationSection';
 
 const TablePaginationActions = dynamic(() => import('./Table'), { ssr: false });
 
@@ -41,67 +44,9 @@ const PlantHealthDashboard = () => {
       case "Dashboard":
         return <DashboardSection setActiveSection={setActiveSection} />;
       case "Plantas":
-        return (
-          <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} p-6 rounded-lg shadow-md`}>
-            <h3 className={`text-2xl font-semibold mb-6 ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
-              Registro de Planta
-            </h3>
-            {renderForm([
-              { name: "Código", type: "text" },
-              { name: "Especie", type: "text" },
-              { name: "Ubicación", type: "text" },
-              {
-                name: "Estado Actual",
-                type: "select",
-                options: [
-                  "Saludable",
-                  "En crecimiento",
-                  "En producción",
-                  "Con anomalías",
-                ],
-              },
-              { name: "Fecha Estado Actual", type: "date" },
-              { name: "Condiciones Iniciales", type: "text" },
-              { name: "Fecha Creación", type: "date" },
-              { name: "Tags", type: "text" },
-            ])}
-            <motion.button
-              type="submit"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className={`col-span-2 mt-6 py-3 px-6 ${
-                isDarkMode ? 'bg-green-600 hover:bg-green-700' : 'bg-green-500 hover:bg-green-600'
-              } text-white rounded-lg transition-colors duration-300 shadow-md`}
-            >
-              Guardar
-            </motion.button> 
-          </div>
-        );
+        return <PlantRegistrationSection isDarkMode={isDarkMode} />;
       case "Crecimiento":
-        return (
-          <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} p-6 rounded-lg shadow-md`}>
-            <h3 className={`text-2xl font-semibold mb-6 ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
-              Registro de Crecimiento
-            </h3>
-            {renderForm([
-              { name: "ID Planta", type: "number" },
-              { name: "Altura (cm)", type: "number" },
-              { name: "Diámetro (cm)", type: "number" },
-              { name: "Número de Hojas", type: "number" },
-              { name: "Fecha Medición", type: "date" },
-            ])}
-            <motion.button
-              type="submit"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className={`col-span-2 mt-6 py-3 px-6 ${
-                isDarkMode ? 'bg-green-600 hover:bg-green-700' : 'bg-green-500 hover:bg-green-600'
-              } text-white rounded-lg transition-colors duration-300 shadow-md`}
-            >
-              Guardar
-            </motion.button>
-          </div>
-        );
+        return <GrowthRegistrationSection isDarkMode={isDarkMode} />;
       case "Produccion":
         return (
           <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} p-6 rounded-lg shadow-md`}>

@@ -63,7 +63,13 @@ export const FormField = ({ field, index }) => {
         {field.type === "select" ? (
           <>
             <InputLabel>{field.name}</InputLabel>
-            <Select label={field.name} defaultValue="" sx={getFieldStyles()}>
+            <Select
+              label={field.name}
+              value={field.value || ""}
+              onChange={(e) => field.onChange(e)}
+              name={field.name.toLowerCase().replace(" ", "_")}
+              sx={getFieldStyles()}
+            >
               {field.options.map((option, idx) => (
                 <MenuItem key={idx} value={option}>
                   {option}
@@ -75,6 +81,9 @@ export const FormField = ({ field, index }) => {
           <TextField
             label={field.name}
             type={field.type}
+            value={field.value || ""}
+            onChange={(e) => field.onChange(e)}
+            name={field.name.toLowerCase().replace(" ", "_")}
             InputLabelProps={
               field.type === "date" ? { shrink: true } : undefined
             }

@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { useTheme } from '@mui/material/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
+import React, { useState, useEffect } from "react";
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import {
   Table,
   TableBody,
@@ -13,64 +13,41 @@ import {
   Card,
   CardContent,
   Typography,
-  Box
-} from '@mui/material';
+  Box,
+  CircularProgress,
+} from "@mui/material";
 
 const columns = [
-  { id: 'codigo', label: 'Codigo', minWidth: 170 },
-  { id: 'especie', label: 'Especie', minWidth: 100 },
-  {
-    id: 'ubicacion',
-    label: 'Ubicacion',
-    minWidth: 170,
-    align: 'right',
-    format: (value) => value.toLocaleString('en-US'),
-  },
-  {
-    id: 'estado_actual',
-    label: 'Estado Actual',
-    minWidth: 170,
-    align: 'right',
-    format: (value) => value.toLocaleString('en-US'),
-  },
-  {
-    id: 'condiciones_iniciales',
-    label: 'Density',
-    minWidth: 170,
-    align: 'right',
-    format: (value) => value.toFixed(2),
-  },
+  { id: "codigo", label: "Codigo", minWidth: 100 },
+  { id: "especie", label: "Especie", minWidth: 120 },
+  { id: "ubicacion", label: "Ubicacion", minWidth: 150 },
+  { id: "estado", label: "Estado", minWidth: 150 },
+  { id: "tags", label: "Tags", minWidth: 150 },
 ];
-
-function createData(codigo, especie, ubicacion, estado_actual) {
-  const condiciones_iniciales = ubicacion / estado_actual;
-  return { codigo, especie, ubicacion, estado_actual, condiciones_iniciales };
-}
-
-
-const rows = [
-    createData("India", "IN", 1324171354, 3287263),
-    createData("China", "CN", 1403500365, 9596961),
-    createData("Italy", "IT", 60483973, 301340),
-    createData("United States", "US", 327167434, 9833520),
-    createData("Canada", "CA", 37602103, 9984670),
-    createData("Australia", "AU", 25475400, 7692024),
-    createData("Germany", "DE", 83019200, 357578),
-    createData("Ireland", "IE", 4857000, 70273),
-    createData("Mexico", "MX", 126577691, 1972550),
-    createData("Japan", "JP", 126317000, 377973),
-    createData("France", "FR", 67022000, 640679),
-    createData("United Kingdom", "GB", 67545757, 242495),
-    createData("Russia", "RU", 146793744, 17098246),
-    createData("Nigeria", "NG", 200962417, 923768),
-    createData("Brazil", "BR", 210147125, 8515767),
-  ];
 
 const ResponsiveTable = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rows, setRows] = useState([]);
+  const [loading, setLoading] = useState(true);
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('https://backend-hackaton-production-f38b.up.railway.app/v1/api/plants');
+        const data = await response.json();
+        setRows(data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -85,17 +62,28 @@ const ResponsiveTable = () => {
     <Card className="mb-4">
       <CardContent>
         <Typography variant="h6" className="mb-2">
-          {row.name} ({row.code})
+          {row.especie} (Código: {row.codigo})
         </Typography>
         <Typography variant="body2" className="mb-1">
-          Population: {row.population.toLocaleString('en-US')}
+          Ubicación: {row.ubicacion}
+        </Typography>
+        <Typography variant="body2" className="mb-1">
+          Estado: {row.estado}
         </Typography>
         <Typography variant="body2">
-          Density: {(row.density).toFixed(2)} per km²
+          Tags: {row.tags}
         </Typography>
       </CardContent>
     </Card>
   );
+
+  if (loading) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" height="300px">
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <Paper className="w-full overflow-hidden">
@@ -104,7 +92,7 @@ const ResponsiveTable = () => {
           {rows
             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             .map((row) => (
-              <MobileCard key={row.code} row={row} />
+              <MobileCard key={row.id} row={row} />
             ))}
         </Box>
       ) : (
@@ -127,14 +115,12 @@ const ResponsiveTable = () => {
               {rows
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row) => (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                  <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
                     {columns.map((column) => {
                       const value = row[column.id];
                       return (
                         <TableCell key={column.id} align={column.align}>
-                          {column.format && typeof value === 'number'
-                            ? column.format(value)
-                            : value}
+                          {value}
                         </TableCell>
                       );
                     })}
