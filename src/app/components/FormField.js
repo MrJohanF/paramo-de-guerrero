@@ -10,7 +10,7 @@ import {
 import { motion } from "framer-motion";
 import { useTheme } from "./ThemeContext";
 
-export const FormField = ({ field, index }) => {
+export const FormField = ({ field, index, value, onChange }) => {
   const muiTheme = useMuiTheme();
   const { isDarkMode } = useTheme();
 
@@ -65,8 +65,8 @@ export const FormField = ({ field, index }) => {
             <InputLabel>{field.label}</InputLabel>
             <Select
               label={field.label}
-              value={field.value || ""}
-              onChange={(e) => field.onChange(e)}
+              value={value || ""}
+              onChange={onChange}
               name={field.name}
               sx={getFieldStyles()}
             >
@@ -81,8 +81,8 @@ export const FormField = ({ field, index }) => {
           <TextField
             label={field.label}
             type={field.type}
-            value={field.value || ""}
-            onChange={(e) => field.onChange(e)}
+            value={value || ""}
+            onChange={onChange}
             name={field.name}
             InputLabelProps={
               field.type === "date" ? { shrink: true } : undefined
