@@ -1,20 +1,15 @@
-// PlantRegistrationSection.js
-
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { FormField } from './FormField';
+import { FormField } from "./FormField";
 import { Snackbar, Alert } from "@mui/material";
 
-const PlantRegistrationSection = ({ isDarkMode }) => {
+const ProductionRegistrationSection = ({ isDarkMode }) => {
   const [formData, setFormData] = useState({
-    codigo: "",
-    especie: "",
-    ubicacion: "",
-    estado: "",
-    fecha_actual: "",
-    condiciones: "",
-    fecha_creacion: "",
-    tags: "",
+    id_planta: "",
+    cantidad: "",
+    fecha_cosecha: "",
+    calidad: "",
+    destino: "",
   });
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -34,39 +29,40 @@ const PlantRegistrationSection = ({ isDarkMode }) => {
     e.preventDefault();
     try {
       const response = await fetch(
-        "https://backend-hackaton-production-f38b.up.railway.app/v1/api/plants/create",
+        "https://backend-hackaton-production-f38b.up.railway.app/v1/api/production/create",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(formData),
+          body: JSON.stringify({
+            ...formData,
+            cantidad: Number(formData.cantidad),
+            fecha_cosecha: new Date(formData.fecha_cosecha).toISOString(),
+          }),
         }
       );
 
       if (response.ok) {
         setSnackbar({
           open: true,
-          message: "Planta registrada exitosamente",
+          message: "Producción registrada exitosamente",
           severity: "success",
         });
         setFormData({
-          codigo: "",
-          especie: "",
-          ubicacion: "",
-          estado: "",
-          fecha_actual: "",
-          condiciones: "",
-          fecha_creacion: "",
-          tags: "",
+          id_planta: "",
+          cantidad: "",
+          fecha_cosecha: "",
+          calidad: "",
+          destino: "",
         });
       } else {
-        throw new Error("Error al registrar la planta");
+        throw new Error("Error al registrar la producción");
       }
     } catch (error) {
       setSnackbar({
         open: true,
-        message: "Error al registrar la planta",
+        message: "Error al registrar la producción",
         severity: "error",
       });
     }
@@ -97,7 +93,9 @@ const PlantRegistrationSection = ({ isDarkMode }) => {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         className={`col-span-2 mt-6 py-3 px-6 ${
-          isDarkMode ? 'bg-green-600 hover:bg-green-700' : 'bg-green-500 hover:bg-green-600'
+          isDarkMode
+            ? "bg-green-600 hover:bg-green-700"
+            : "bg-green-500 hover:bg-green-600"
         } text-white rounded-lg transition-colors duration-300 shadow-md`}
       >
         Guardar
@@ -106,29 +104,29 @@ const PlantRegistrationSection = ({ isDarkMode }) => {
   );
 
   return (
-    <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} p-6 rounded-lg shadow-md`}>
-      <h3 className={`text-2xl font-semibold mb-6 ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
-        Registro de Planta
+    <div
+      className={`${
+        isDarkMode ? "bg-gray-800" : "bg-white"
+      } p-6 rounded-lg shadow-md`}
+    >
+      <h3
+        className={`text-2xl font-semibold mb-6 ${
+          isDarkMode ? "text-gray-200" : "text-gray-800"
+        }`}
+      >
+        Registro de Producción
       </h3>
       {renderForm([
-        { name: "codigo", type: "text", label: "Código" },
-        { name: "especie", type: "text", label: "Especie" },
-        { name: "ubicacion", type: "text", label: "Ubicación" },
+        { name: "id_planta", type: "number", label: "ID Planta" },
+        { name: "cantidad", type: "number", label: "Cantidad (kg)" },
+        { name: "fecha_cosecha", type: "date", label: "Fecha Cosecha" },
         {
-          name: "estado",
+          name: "calidad",
           type: "select",
-          label: "Estado",
-          options: [
-            "Saludable",
-            "En crecimiento",
-            "En producción",
-            "Con anomalías",
-          ],
+          label: "Calidad",
+          options: ["Excelente", "Buena", "Regular", "Mala"],
         },
-        { name: "fecha_estado", type: "date", label: "Fecha de Estado" },
-        { name: "condiciones", type: "text", label: "Condiciones" },
-        { name: "fecha_creacion", type: "date", label: "Fecha de Creación" },
-        { name: "tags", type: "text", label: "Tags" },
+        { name: "destino", type: "text", label: "Destino" },
       ])}
       <Snackbar
         open={snackbar.open}
@@ -138,7 +136,7 @@ const PlantRegistrationSection = ({ isDarkMode }) => {
         <Alert
           onClose={() => setSnackbar({ ...snackbar, open: false })}
           severity={snackbar.severity}
-          sx={{ width: '100%' }}
+          sx={{ width: "100%" }}
         >
           {snackbar.message}
         </Alert>
@@ -147,4 +145,4 @@ const PlantRegistrationSection = ({ isDarkMode }) => {
   );
 };
 
-export default PlantRegistrationSection;
+export default ProductionRegistrationSection;

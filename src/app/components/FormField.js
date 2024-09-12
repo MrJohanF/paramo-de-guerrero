@@ -1,3 +1,5 @@
+// FormField.js
+
 import React from "react";
 import {
   Box,
@@ -62,12 +64,12 @@ export const FormField = ({ field, index }) => {
       <FormControl fullWidth variant="outlined" className="mb-3">
         {field.type === "select" ? (
           <>
-            <InputLabel>{field.name}</InputLabel>
+            <InputLabel>{field.label}</InputLabel>
             <Select
-              label={field.name}
+              label={field.label}
               value={field.value || ""}
               onChange={(e) => field.onChange(e)}
-              name={field.name.toLowerCase().replace(" ", "_")}
+              name={field.name}
               sx={getFieldStyles()}
             >
               {field.options.map((option, idx) => (
@@ -79,11 +81,11 @@ export const FormField = ({ field, index }) => {
           </>
         ) : (
           <TextField
-            label={field.name}
+            label={field.label}
             type={field.type}
             value={field.value || ""}
             onChange={(e) => field.onChange(e)}
-            name={field.name.toLowerCase().replace(" ", "_")}
+            name={field.name}
             InputLabelProps={
               field.type === "date" ? { shrink: true } : undefined
             }

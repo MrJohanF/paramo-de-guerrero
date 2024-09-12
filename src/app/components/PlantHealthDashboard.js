@@ -10,6 +10,7 @@ import { FormField } from "./FormField";
 import { DashboardSection } from "./DashboardSection";
 import PlantRegistrationSection from "./PlantRegistrationSection";
 import GrowthRegistrationSection from "./GrowthRegistrationSection";
+import ProductionRegistrationSection from "./ProductionRegistrationSection";
 import LoginComponent from "./LoginComponent";
 
 const TablePaginationActions = dynamic(() => import("./Table"), { ssr: false });
@@ -58,44 +59,7 @@ const PlantHealthDashboard = () => {
       case "Crecimiento":
         return <GrowthRegistrationSection isDarkMode={isDarkMode} />;
       case "Produccion":
-        return (
-          <div
-            className={`${
-              isDarkMode ? "bg-gray-800" : "bg-white"
-            } p-6 rounded-lg shadow-md`}
-          >
-            <h3
-              className={`text-2xl font-semibold mb-6 ${
-                isDarkMode ? "text-gray-200" : "text-gray-800"
-              }`}
-            >
-              Registro de Producción
-            </h3>
-            {renderForm([
-              { name: "ID Planta", type: "number" },
-              { name: "Cantidad (kg)", type: "number" },
-              { name: "Fecha Cosecha", type: "date" },
-              {
-                name: "Calidad",
-                type: "select",
-                options: ["Excelente", "Buena", "Regular", "Mala"],
-              },
-              { name: "Destino", type: "text" },
-            ])}
-            <motion.button
-              type="submit"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className={`col-span-2 mt-6 py-3 px-6 ${
-                isDarkMode
-                  ? "bg-green-600 hover:bg-green-700"
-                  : "bg-green-500 hover:bg-green-600"
-              } text-white rounded-lg transition-colors duration-300 shadow-md`}
-            >
-              Guardar
-            </motion.button>
-          </div>
-        );
+        return <ProductionRegistrationSection isDarkMode={isDarkMode} />;
       case "Anomalias":
         return (
           <div
