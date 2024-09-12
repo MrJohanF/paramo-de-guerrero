@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useTheme } from "@mui/material/styles";
-import useMediaQuery from "@mui/material/useMediaQuery";
+import { useMediaQuery } from "@mui/material";
 import {
   Table,
   TableBody,
@@ -15,7 +14,9 @@ import {
   Typography,
   Box,
   CircularProgress,
+  styled,
 } from "@mui/material";
+import { useTheme } from "./ThemeContext";
 
 const columns = [
   { id: "codigo", label: "Codigo", minWidth: 100 },
@@ -25,13 +26,47 @@ const columns = [
   { id: "tags", label: "Tags", minWidth: 150 },
 ];
 
+const StyledPaper = styled(Paper)(({ theme, isDarkMode }) => ({
+  backgroundColor: isDarkMode ? '#1e2124' : '#ffffff',
+  color: isDarkMode ? '#ffffff' : '#000000',
+}));
+
+const StyledTableCell = styled(TableCell)(({ theme, isDarkMode, isHeader }) => ({
+  color: isHeader 
+    ? (isDarkMode ? '#4ade80' : '#1e7e34')
+    : (isDarkMode ? '#ffffff' : '#000000'),
+  borderBottom: `1px solid ${isDarkMode ? '#2d3035' : '#e0e0e0'}`,
+  backgroundColor: isHeader 
+    ? (isDarkMode ? '#1e2124' : '#f5f5f5')
+    : 'transparent',
+  fontWeight: isHeader ? 'bold' : 'normal',
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme, isDarkMode }) => ({
+  '&:nth-of-type(odd)': {
+    backgroundColor: isDarkMode ? '#24272b' : '#f9f9f9',
+  },
+  '&:nth-of-type(even)': {
+    backgroundColor: isDarkMode ? '#1e2124' : '#ffffff',
+  },
+  '&:hover': {
+    backgroundColor: isDarkMode ? '#2d3035' : '#f0f0f0',
+  },
+}));
+
+const StyledCard = styled(Card)(({ theme, isDarkMode }) => ({
+  backgroundColor: isDarkMode ? '#24272b' : '#ffffff',
+  color: isDarkMode ? '#ffffff' : '#000000',
+  marginBottom: '1rem',
+}));
+
 const ResponsiveTable = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isMobile = useMediaQuery('(max-width:600px)');
+  const { isDarkMode } = useTheme();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -59,36 +94,36 @@ const ResponsiveTable = () => {
   };
 
   const MobileCard = ({ row }) => (
-    <Card className="mb-4">
+    <StyledCard isDarkMode={isDarkMode}>
       <CardContent>
-        <Typography variant="h6" className="mb-2">
+        <Typography variant="h6" sx={{ mb: 1, color: isDarkMode ? '#4ade80' : '#1e7e34' }}>
           {row.especie} (Código: {row.codigo})
         </Typography>
-        <Typography variant="body2" className="mb-1">
+        <Typography variant="body2" sx={{ mb: 0.5 }}>
           Ubicación: {row.ubicacion}
         </Typography>
-        <Typography variant="body2" className="mb-1">
+        <Typography variant="body2" sx={{ mb: 0.5 }}>
           Estado: {row.estado}
         </Typography>
         <Typography variant="body2">
           Tags: {row.tags}
         </Typography>
       </CardContent>
-    </Card>
+    </StyledCard>
   );
 
   if (loading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" height="300px">
-        <CircularProgress />
+        <CircularProgress color={isDarkMode ? "secondary" : "primary"} />
       </Box>
     );
   }
 
   return (
-    <Paper className="w-full overflow-hidden">
+    <StyledPaper isDarkMode={isDarkMode} sx={{ width: '100%', overflow: 'hidden' }}>
       {isMobile ? (
-        <Box className="p-4">
+        <Box sx={{ p: 2 }}>
           {rows
             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             .map((row) => (
@@ -96,18 +131,20 @@ const ResponsiveTable = () => {
             ))}
         </Box>
       ) : (
-        <TableContainer className="max-h-[440px]">
-          <Table stickyHeader aria-label="sticky table">
+        <TableContainer sx={{ maxHeight: 440 }}>
+          <Table stickyHeader>
             <TableHead>
               <TableRow>
                 {columns.map((column) => (
-                  <TableCell
+                  <StyledTableCell
                     key={column.id}
                     align={column.align}
                     style={{ minWidth: column.minWidth }}
+                    isDarkMode={isDarkMode}
+                    isHeader
                   >
                     {column.label}
-                  </TableCell>
+                  </StyledTableCell>
                 ))}
               </TableRow>
             </TableHead>
@@ -115,16 +152,16 @@ const ResponsiveTable = () => {
               {rows
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row) => (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
+                  <StyledTableRow hover tabIndex={-1} key={row.id} isDarkMode={isDarkMode}>
                     {columns.map((column) => {
                       const value = row[column.id];
                       return (
-                        <TableCell key={column.id} align={column.align}>
+                        <StyledTableCell key={column.id} align={column.align} isDarkMode={isDarkMode}>
                           {value}
-                        </TableCell>
+                        </StyledTableCell>
                       );
                     })}
-                  </TableRow>
+                  </StyledTableRow>
                 ))}
             </TableBody>
           </Table>
@@ -138,8 +175,17 @@ const ResponsiveTable = () => {
         page={page}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
+        sx={{
+          color: isDarkMode ? '#ffffff' : '#000000',
+          '.MuiTablePagination-select': {
+            color: isDarkMode ? '#ffffff' : '#000000',
+          },
+          '.MuiTablePagination-selectIcon': {
+            color: isDarkMode ? '#ffffff' : '#000000',
+          },
+        }}
       />
-    </Paper>
+    </StyledPaper>
   );
 };
 
