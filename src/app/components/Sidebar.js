@@ -7,43 +7,25 @@ import { sidebarOptions } from "./SidebarOptions";
 const sidebarVariants = {
   open: {
     x: 0,
-    opacity: 1,
     transition: {
-      type: "spring",
-      stiffness: 300,
-      damping: 30,
-      when: "beforeChildren",
-      staggerChildren: 0.1,
+      type: "tween",
+      duration: 0.3,
+      ease: "easeOut",
     },
   },
   closed: {
     x: "-100%",
-    opacity: 0,
     transition: {
-      type: "spring",
-      stiffness: 300,
-      damping: 30,
-      when: "afterChildren",
-      staggerChildren: 0.1,
+      type: "tween",
+      duration: 0.3,
+      ease: "easeIn",
     },
   },
 };
 
-const menuItemVariants = {
-  open: {
-    y: 0,
-    opacity: 1,
-    transition: {
-      y: { stiffness: 1000, velocity: -100 }
-    }
-  },
-  closed: {
-    y: 50,
-    opacity: 0,
-    transition: {
-      y: { stiffness: 1000 }
-    }
-  }
+const fadeInVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { duration: 0.3 } },
 };
 
 export const Sidebar = ({
@@ -61,7 +43,7 @@ export const Sidebar = ({
   const handleSectionClick = useCallback((name) => {
     setActiveSection(name);
     if (window.innerWidth < 768) {
-      setTimeout(() => setIsOpen(false), 300); // Delay closing on mobile
+      setIsOpen(false);
     }
   }, [setActiveSection, setIsOpen]);
 
@@ -77,9 +59,9 @@ export const Sidebar = ({
     >
       <div className="p-6">
         <motion.h2
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
+          variants={fadeInVariants}
+          initial="hidden"
+          animate="visible"
           className={`text-2xl font-bold mb-6 ${
             isDarkMode ? "text-green-400" : "text-green-600"
           } hidden md:block`}
@@ -88,9 +70,9 @@ export const Sidebar = ({
         </motion.h2>
 
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
+          variants={fadeInVariants}
+          initial="hidden"
+          animate="visible"
           className={`mb-6 p-4 rounded-lg ${
             isDarkMode ? "bg-gray-700" : "bg-green-100"
           }`}
@@ -119,46 +101,50 @@ export const Sidebar = ({
         </motion.div>
 
         <nav>
-          {memoizedSidebarOptions.map((option, index) => (
-            <motion.a
-              key={option.name}
-              variants={menuItemVariants}
-              custom={index}
-              href="#"
-              className={`flex items-center p-3 mb-2 ${
-                isDarkMode
-                  ? "text-gray-300 hover:bg-gray-700"
-                  : "text-gray-700 hover:bg-green-100"
-              } rounded-lg transition-colors duration-300 ${
-                activeSection === option.name
-                  ? isDarkMode
-                    ? "bg-gray-700 text-green-400"
-                    : "bg-green-100 text-green-700"
-                  : ""
-              }`}
-              onClick={() => handleSectionClick(option.name)}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              {React.cloneElement(option.icon, {
-                className: "w-6 h-6 mr-3",
-              })}
-              <span>{option.name}</span>
-            </motion.a>
-          ))}
+          <AnimatePresence>
+            {memoizedSidebarOptions.map((option) => (
+              <motion.a
+                key={option.name}
+                variants={fadeInVariants}
+                initial="hidden"
+                animate="visible"
+                exit="hidden"
+                href="#"
+                className={`flex items-center p-3 mb-2 ${
+                  isDarkMode
+                    ? "text-gray-300 hover:bg-gray-700"
+                    : "text-gray-700 hover:bg-green-100"
+                } rounded-lg transition-colors duration-300 ${
+                  activeSection === option.name
+                    ? isDarkMode
+                      ? "bg-gray-700 text-green-400"
+                      : "bg-green-100 text-green-700"
+                    : ""
+                }`}
+                onClick={() => handleSectionClick(option.name)}
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                {React.cloneElement(option.icon, {
+                  className: "w-6 h-6 mr-3",
+                })}
+                <span>{option.name}</span>
+              </motion.a>
+            ))}
+          </AnimatePresence>
         </nav>
         <motion.button
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
+          variants={fadeInVariants}
+          initial="hidden"
+          animate="visible"
           onClick={toggleTheme}
           className={`mt-6 p-3 w-full flex items-center justify-center ${
             isDarkMode
               ? "bg-gray-700 text-yellow-400"
               : "bg-gray-200 text-gray-800"
           } rounded-lg transition-colors duration-300`}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.98 }}
         >
           {isDarkMode ? (
             <Sun className="w-6 h-6 mr-2" />
@@ -168,15 +154,15 @@ export const Sidebar = ({
           {isDarkMode ? "Modo Claro" : "Modo Oscuro"}
         </motion.button>
         <motion.button
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
+          variants={fadeInVariants}
+          initial="hidden"
+          animate="visible"
           onClick={onLogout}
           className={`mt-4 p-3 w-full flex items-center justify-center ${
             isDarkMode ? "bg-red-600 text-white" : "bg-red-500 text-white"
           } rounded-lg transition-colors duration-300`}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.98 }}
         >
           <LogOut className="w-6 h-6 mr-2" />
           Cerrar sesión
