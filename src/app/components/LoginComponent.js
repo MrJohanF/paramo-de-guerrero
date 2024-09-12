@@ -61,7 +61,7 @@ const LoginComponent = ({ onLogin }) => {
               isDarkMode ? 'bg-green-600 hover:bg-green-700' : 'bg-green-500 hover:bg-green-600'
             } text-white rounded transition-colors duration-300`}
           >
-            Login
+            Iniciar Sesión
           </motion.button>
         </form>
       </motion.div>
