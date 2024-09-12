@@ -1,5 +1,5 @@
 import React, { useMemo, useCallback } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Sun, Moon, LogOut, User } from "lucide-react";
 import { useTheme } from "./ThemeContext";
 import { sidebarOptions } from "./SidebarOptions";
@@ -7,20 +7,43 @@ import { sidebarOptions } from "./SidebarOptions";
 const sidebarVariants = {
   open: {
     x: 0,
+    opacity: 1,
     transition: {
       type: "spring",
       stiffness: 300,
       damping: 30,
+      when: "beforeChildren",
+      staggerChildren: 0.1,
     },
   },
   closed: {
     x: "-100%",
+    opacity: 0,
     transition: {
       type: "spring",
       stiffness: 300,
       damping: 30,
+      when: "afterChildren",
+      staggerChildren: 0.1,
     },
   },
+};
+
+const menuItemVariants = {
+  open: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      y: { stiffness: 1000, velocity: -100 }
+    }
+  },
+  closed: {
+    y: 50,
+    opacity: 0,
+    transition: {
+      y: { stiffness: 1000 }
+    }
+  }
 };
 
 export const Sidebar = ({
@@ -37,7 +60,9 @@ export const Sidebar = ({
 
   const handleSectionClick = useCallback((name) => {
     setActiveSection(name);
-    setIsOpen(false);
+    if (window.innerWidth < 768) {
+      setTimeout(() => setIsOpen(false), 300); // Delay closing on mobile
+    }
   }, [setActiveSection, setIsOpen]);
 
   const sidebarContent = (
@@ -51,15 +76,21 @@ export const Sidebar = ({
       } shadow-lg overflow-y-auto fixed md:static top-0 left-0 h-full z-50`}
     >
       <div className="p-6">
-        <h2
+        <motion.h2
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
           className={`text-2xl font-bold mb-6 ${
             isDarkMode ? "text-green-400" : "text-green-600"
           } hidden md:block`}
         >
           Rastreador de salud vegetal
-        </h2>
+        </motion.h2>
 
-        <div
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
           className={`mb-6 p-4 rounded-lg ${
             isDarkMode ? "bg-gray-700" : "bg-green-100"
           }`}
@@ -85,12 +116,14 @@ export const Sidebar = ({
           >
             Rol: {userInfo?.role || "No especificado"}
           </p>
-        </div>
+        </motion.div>
 
         <nav>
-          {memoizedSidebarOptions.map((option) => (
+          {memoizedSidebarOptions.map((option, index) => (
             <motion.a
               key={option.name}
+              variants={menuItemVariants}
+              custom={index}
               href="#"
               className={`flex items-center p-3 mb-2 ${
                 isDarkMode
@@ -115,6 +148,9 @@ export const Sidebar = ({
           ))}
         </nav>
         <motion.button
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
           onClick={toggleTheme}
           className={`mt-6 p-3 w-full flex items-center justify-center ${
             isDarkMode
@@ -132,6 +168,9 @@ export const Sidebar = ({
           {isDarkMode ? "Modo Claro" : "Modo Oscuro"}
         </motion.button>
         <motion.button
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
           onClick={onLogout}
           className={`mt-4 p-3 w-full flex items-center justify-center ${
             isDarkMode ? "bg-red-600 text-white" : "bg-red-500 text-white"
@@ -147,8 +186,8 @@ export const Sidebar = ({
   );
 
   return (
-    <>
+    <AnimatePresence>
       {(isOpen || (typeof window !== "undefined" && window.innerWidth >= 768)) && sidebarContent}
-    </>
+    </AnimatePresence>
   );
 };
