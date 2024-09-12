@@ -1,5 +1,5 @@
 import React, { useMemo, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { Sun, Moon, LogOut, User } from "lucide-react";
 import { useTheme } from "./ThemeContext";
 import { sidebarOptions } from "./SidebarOptions";
@@ -11,8 +11,6 @@ const sidebarVariants = {
       type: "spring",
       stiffness: 300,
       damping: 30,
-      when: "beforeChildren",
-      staggerChildren: 0.1,
     },
   },
   closed: {
@@ -21,22 +19,7 @@ const sidebarVariants = {
       type: "spring",
       stiffness: 300,
       damping: 30,
-      when: "afterChildren",
-      staggerChildren: 0.1,
     },
-  },
-};
-
-const menuItemVariants = {
-  open: {
-    opacity: 1,
-    y: 0,
-    transition: { type: "spring", stiffness: 300, damping: 30 },
-  },
-  closed: {
-    opacity: 0,
-    y: 20,
-    transition: { type: "spring", stiffness: 300, damping: 30 },
   },
 };
 
@@ -105,34 +88,31 @@ export const Sidebar = ({
         </div>
 
         <nav>
-          <AnimatePresence>
-            {memoizedSidebarOptions.map((option) => (
-              <motion.a
-                key={option.name}
-                href="#"
-                variants={menuItemVariants}
-                className={`flex items-center p-3 mb-2 ${
-                  isDarkMode
-                    ? "text-gray-300 hover:bg-gray-700"
-                    : "text-gray-700 hover:bg-green-100"
-                } rounded-lg transition-colors duration-300 ${
-                  activeSection === option.name
-                    ? isDarkMode
-                      ? "bg-gray-700 text-green-400"
-                      : "bg-green-100 text-green-700"
-                    : ""
-                }`}
-                onClick={() => handleSectionClick(option.name)}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                {React.cloneElement(option.icon, {
-                  className: "w-6 h-6 mr-3",
-                })}
-                <span>{option.name}</span>
-              </motion.a>
-            ))}
-          </AnimatePresence>
+          {memoizedSidebarOptions.map((option) => (
+            <motion.a
+              key={option.name}
+              href="#"
+              className={`flex items-center p-3 mb-2 ${
+                isDarkMode
+                  ? "text-gray-300 hover:bg-gray-700"
+                  : "text-gray-700 hover:bg-green-100"
+              } rounded-lg transition-colors duration-300 ${
+                activeSection === option.name
+                  ? isDarkMode
+                    ? "bg-gray-700 text-green-400"
+                    : "bg-green-100 text-green-700"
+                  : ""
+              }`}
+              onClick={() => handleSectionClick(option.name)}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              {React.cloneElement(option.icon, {
+                className: "w-6 h-6 mr-3",
+              })}
+              <span>{option.name}</span>
+            </motion.a>
+          ))}
         </nav>
         <motion.button
           onClick={toggleTheme}
@@ -167,8 +147,8 @@ export const Sidebar = ({
   );
 
   return (
-    <AnimatePresence>
+    <>
       {(isOpen || (typeof window !== "undefined" && window.innerWidth >= 768)) && sidebarContent}
-    </AnimatePresence>
+    </>
   );
 };
