@@ -63,9 +63,9 @@ export const DashboardSection = ({ setActiveSection }) => {
   }, []);
 
   const pieData = [
-    { name: 'Healthy', value: 800 },
-    { name: 'At Risk', value: 150 },
-    { name: 'Unhealthy', value: 50 },
+    { name: 'Saludables', value: 800 },
+    { name: 'En Riesgo', value: 150 },
+    { name: 'Insalubre', value: 50 },
   ];
   const COLORS = ['#22c55e', '#eab308', '#ef4444'];
 
@@ -94,9 +94,9 @@ export const DashboardSection = ({ setActiveSection }) => {
           <h2 className="text-2xl font-bold mb-6">Analytics</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <AnalyticsCard title="Total Revenue" value="$2,750" change="+20.1% from last month" icon={DollarSign} />
-            <AnalyticsCard title="New Plants" value="+780" change="+180.1% from last month" icon={TrendingUp} />
-            <AnalyticsCard title="Plant Health" value="98%" change="+5% from last month" icon={Activity} />
+            <AnalyticsCard title="Total de Costos" value="$2,750" change="+20.1% desde el mes pasado" icon={DollarSign} />
+            <AnalyticsCard title="Nuevas Plantas" value="+780" change="+180.1% desde el mes pasado" icon={TrendingUp} />
+            <AnalyticsCard title="Sanidad Vegetal" value="98%" change="+5% desde el mes pasado" icon={Activity} />
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -106,7 +106,7 @@ export const DashboardSection = ({ setActiveSection }) => {
               transition={{ duration: 0.3 }}
               className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg shadow-md p-4`}
             >
-              <h3 className="text-lg font-semibold mb-4">Revenue Over Time</h3>
+              <h3 className="text-lg font-semibold mb-4">Plantas Saludables</h3>
               <div className="h-[300px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={revenueData}>
@@ -126,7 +126,7 @@ export const DashboardSection = ({ setActiveSection }) => {
               transition={{ duration: 0.3 }}
               className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg shadow-md p-4`}
             >
-              <h3 className="text-lg font-semibold mb-4">Plant Health Distribution</h3>
+              <h3 className="text-lg font-semibold mb-4">Distribucion de Plan de Salud</h3>
               <div className="h-[300px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
