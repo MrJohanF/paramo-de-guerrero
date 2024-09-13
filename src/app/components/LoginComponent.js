@@ -18,7 +18,6 @@ const LoginComponent = ({ onLogin, onBackToHome }) => {
       setIsLoading(true);
       setError("");
 
-      // Set a minimum loading time of 1.5 seconds
       const minLoadingTime = 1500;
       const startTime = Date.now();
 
@@ -39,7 +38,6 @@ const LoginComponent = ({ onLogin, onBackToHome }) => {
           localStorage.setItem("token", data.token);
           const userInfoData = await fetchUserInfo(data.token);
 
-          // Ensure the loading state is shown for at least the minimum time
           const elapsedTime = Date.now() - startTime;
           if (elapsedTime < minLoadingTime) {
             await new Promise((resolve) =>
@@ -171,7 +169,7 @@ const LoginComponent = ({ onLogin, onBackToHome }) => {
                   id="username"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className={`w-full p-2 pl-10 rounded-md text-sm sm:text-base ${
+                  className={`w-full p-2 pl-10 rounded-md text-base ${
                     isDarkMode
                       ? "bg-gray-700 text-white"
                       : "bg-gray-100 text-gray-900"
@@ -201,7 +199,7 @@ const LoginComponent = ({ onLogin, onBackToHome }) => {
                   id="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className={`w-full p-2 pl-10 rounded-md text-sm sm:text-base ${
+                  className={`w-full p-2 pl-10 rounded-md text-base ${
                     isDarkMode
                       ? "bg-gray-700 text-white"
                       : "bg-gray-100 text-gray-900"
@@ -229,7 +227,7 @@ const LoginComponent = ({ onLogin, onBackToHome }) => {
                 isDarkMode
                   ? "bg-green-600 hover:bg-green-700"
                   : "bg-green-500 hover:bg-green-600"
-              } text-white rounded-md transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 text-sm sm:text-base`}
+              } text-white rounded-md transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 text-base`}
             >
               Iniciar Sesión
             </motion.button>
