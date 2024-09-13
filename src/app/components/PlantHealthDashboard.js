@@ -11,6 +11,7 @@ import AnomalyRegistrationSection from "./AnomalyRegistrationSection";
 import SensorRegistrationSection from "./SensorRegistrationSection";
 import PlantStatusSection from "./PlantStatusSection";
 import LoginComponent from "./LoginComponent";
+import LandingPage from './LandingPage';
 
 const PlantHealthDashboard = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -19,7 +20,9 @@ const PlantHealthDashboard = () => {
   const [activeSection, setActiveSection] = useState("Dashboard");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [showLandingPage, setShowLandingPage] = useState(true);
   const { isDarkMode } = useTheme();
+
 
   useEffect(() => {
     setIsMounted(true);
@@ -84,6 +87,10 @@ const PlantHealthDashboard = () => {
 
   if (!isMounted) {
     return null;
+  }
+
+  if (showLandingPage) {
+    return <LandingPage onGetStarted={() => setShowLandingPage(false)} />;
   }
 
   if (!isLoggedIn) {
