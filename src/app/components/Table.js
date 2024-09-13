@@ -17,8 +17,10 @@ import {
   Alert,
   AlertTitle,
   styled,
+  Button,
 } from "@mui/material";
 import { useTheme } from "./ThemeContext";
+import { Sparkles } from 'lucide-react';
 
 const columns = [
   { id: "codigo", label: "Codigo", minWidth: 100 },
@@ -26,49 +28,79 @@ const columns = [
   { id: "ubicacion", label: "Ubicacion", minWidth: 150 },
   { id: "estado", label: "Estado", minWidth: 150 },
   { id: "tags", label: "Tags", minWidth: 150 },
+  { id: "actions", label: "Acciones", minWidth: 100 },
 ];
 
 const StyledPaper = styled(Paper)(({ theme, isDarkMode }) => ({
-  backgroundColor: isDarkMode ? '#1e2124' : '#ffffff',
-  color: isDarkMode ? '#ffffff' : '#000000',
+  backgroundColor: isDarkMode ? "#1e2124" : "#ffffff",
+  color: isDarkMode ? "#ffffff" : "#000000",
 }));
 
-const StyledTableCell = styled(TableCell)(({ theme, isDarkMode, isHeader }) => ({
-  color: isHeader 
-    ? (isDarkMode ? '#4ade80' : '#1e7e34')
-    : (isDarkMode ? '#ffffff' : '#000000'),
-  borderBottom: `1px solid ${isDarkMode ? '#2d3035' : '#e0e0e0'}`,
-  backgroundColor: isHeader 
-    ? (isDarkMode ? '#1e2124' : '#f5f5f5')
-    : 'transparent',
-  fontWeight: isHeader ? 'bold' : 'normal',
-}));
+const StyledTableCell = styled(TableCell)(
+  ({ theme, isDarkMode, isHeader }) => ({
+    color: isHeader
+      ? isDarkMode
+        ? "#4ade80"
+        : "#1e7e34"
+      : isDarkMode
+      ? "#ffffff"
+      : "#000000",
+    borderBottom: `1px solid ${isDarkMode ? "#2d3035" : "#e0e0e0"}`,
+    backgroundColor: isHeader
+      ? isDarkMode
+        ? "#1e2124"
+        : "#f5f5f5"
+      : "transparent",
+    fontWeight: isHeader ? "bold" : "normal",
+  })
+);
 
 const StyledTableRow = styled(TableRow)(({ theme, isDarkMode }) => ({
-  '&:nth-of-type(odd)': {
-    backgroundColor: isDarkMode ? '#24272b' : '#f9f9f9',
+  "&:nth-of-type(odd)": {
+    backgroundColor: isDarkMode ? "#24272b" : "#f9f9f9",
   },
-  '&:nth-of-type(even)': {
-    backgroundColor: isDarkMode ? '#1e2124' : '#ffffff',
+  "&:nth-of-type(even)": {
+    backgroundColor: isDarkMode ? "#1e2124" : "#ffffff",
   },
-  '&:hover': {
-    backgroundColor: isDarkMode ? '#2d3035' : '#f0f0f0',
+  "&:hover": {
+    backgroundColor: isDarkMode ? "#2d3035" : "#f0f0f0",
   },
 }));
 
 const StyledCard = styled(Card)(({ theme, isDarkMode }) => ({
-  backgroundColor: isDarkMode ? '#24272b' : '#ffffff',
-  color: isDarkMode ? '#ffffff' : '#000000',
-  marginBottom: '1rem',
+  backgroundColor: isDarkMode ? "#24272b" : "#ffffff",
+  color: isDarkMode ? "#ffffff" : "#000000",
+  marginBottom: "1rem",
 }));
 
-const ResponsiveTable = ({ token, searchResult, isLoading, error }) => {
+const StyledButton = styled(Button)(({ theme, isDarkMode }) => ({
+  backgroundColor: isDarkMode ? "#4ade80" : "#22c55e",
+  color: isDarkMode ? "#000000" : "#ffffff",
+  "&:hover": {
+    backgroundColor: isDarkMode ? "#22c55e" : "#16a34a",
+  },
+  display: "flex",
+  alignItems: "center",
+  gap: "8px",
+  padding: "6px 16px",
+  borderRadius: "8px",
+  textTransform: "none",
+  fontWeight: "bold",
+}));
+
+const ResponsiveTable = ({
+  token,
+  searchResult,
+  isLoading,
+  error,
+  onSelectPlant,
+}) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState(null);
-  const isMobile = useMediaQuery('(max-width:600px)');
+  const isMobile = useMediaQuery("(max-width:600px)");
   const { isDarkMode } = useTheme();
 
   useEffect(() => {
@@ -81,20 +113,23 @@ const ResponsiveTable = ({ token, searchResult, isLoading, error }) => {
 
       try {
         if (!token) {
-          throw new Error('No authentication token available');
+          throw new Error("No authentication token available");
         }
-        const response = await fetch('https://backend-hackaton-production-f38b.up.railway.app/v1/api/plants', {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-        });
+        const response = await fetch(
+          "https://backend-hackaton-production-f38b.up.railway.app/v1/api/plants",
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
         if (!Array.isArray(data)) {
-          throw new Error('Data is not an array');
+          throw new Error("Data is not an array");
         }
         setRows(data);
         setLoading(false);
@@ -124,7 +159,10 @@ const ResponsiveTable = ({ token, searchResult, isLoading, error }) => {
   const MobileCard = ({ row }) => (
     <StyledCard isDarkMode={isDarkMode}>
       <CardContent>
-        <Typography variant="h6" sx={{ mb: 1, color: isDarkMode ? '#4ade80' : '#1e7e34' }}>
+        <Typography
+          variant="h6"
+          sx={{ mb: 1, color: isDarkMode ? "#4ade80" : "#1e7e34" }}
+        >
           {row.especie} (Código: {row.codigo})
         </Typography>
         <Typography variant="body2" sx={{ mb: 0.5 }}>
@@ -133,16 +171,30 @@ const ResponsiveTable = ({ token, searchResult, isLoading, error }) => {
         <Typography variant="body2" sx={{ mb: 0.5 }}>
           Estado: {row.estado}
         </Typography>
-        <Typography variant="body2">
+        <Typography variant="body2" sx={{ mb: 0.5 }}>
           Tags: {row.tags}
         </Typography>
+        <StyledButton
+          onClick={() => onSelectPlant(row.codigo)}
+          isDarkMode={isDarkMode}
+          startIcon={<Sparkles size={16} />}
+
+          // IA button
+        >
+         
+        </StyledButton>
       </CardContent>
     </StyledCard>
   );
 
   if (loading || isLoading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" height="300px">
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="300px"
+      >
         <CircularProgress color={isDarkMode ? "secondary" : "primary"} />
       </Box>
     );
@@ -157,10 +209,16 @@ const ResponsiveTable = ({ token, searchResult, isLoading, error }) => {
     );
   }
 
-  const displayRows = rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  const displayRows = rows.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
 
   return (
-    <StyledPaper isDarkMode={isDarkMode} sx={{ width: '100%', overflow: 'hidden' }}>
+    <StyledPaper
+      isDarkMode={isDarkMode}
+      sx={{ width: "100%", overflow: "hidden" }}
+    >
       {isMobile ? (
         <Box sx={{ p: 2 }}>
           {displayRows.map((row, index) => (
@@ -187,17 +245,45 @@ const ResponsiveTable = ({ token, searchResult, isLoading, error }) => {
             </TableHead>
             <TableBody>
               {displayRows.map((row, index) => (
-                <StyledTableRow 
-                  hover 
-                  tabIndex={-1} 
+                <StyledTableRow
+                  hover
+                  tabIndex={-1}
                   key={index}
                   isDarkMode={isDarkMode}
-                  sx={rows.length === 1 ? { backgroundColor: isDarkMode ? '#2a4a3e' : '#e6f4ea' } : {}}
+                  sx={
+                    rows.length === 1
+                      ? { backgroundColor: isDarkMode ? "#2a4a3e" : "#e6f4ea" }
+                      : {}
+                  }
                 >
                   {columns.map((column) => {
+                    if (column.id === "actions") {
+                      return (
+                        <StyledTableCell
+                          key={column.id}
+                          align={column.align}
+                          isDarkMode={isDarkMode}
+                        >
+                          <StyledButton
+                            onClick={() => onSelectPlant(row.codigo)}
+                            isDarkMode={isDarkMode}
+                            startIcon={<Sparkles size={16} />}
+                            size="small"
+
+                            // IA button
+                          >
+                            
+                          </StyledButton>
+                        </StyledTableCell>
+                      );
+                    }
                     const value = row[column.id];
                     return (
-                      <StyledTableCell key={column.id} align={column.align} isDarkMode={isDarkMode}>
+                      <StyledTableCell
+                        key={column.id}
+                        align={column.align}
+                        isDarkMode={isDarkMode}
+                      >
                         {value}
                       </StyledTableCell>
                     );
@@ -217,12 +303,12 @@ const ResponsiveTable = ({ token, searchResult, isLoading, error }) => {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
         sx={{
-          color: isDarkMode ? '#ffffff' : '#000000',
-          '.MuiTablePagination-select': {
-            color: isDarkMode ? '#ffffff' : '#000000',
+          color: isDarkMode ? "#ffffff" : "#000000",
+          ".MuiTablePagination-select": {
+            color: isDarkMode ? "#ffffff" : "#000000",
           },
-          '.MuiTablePagination-selectIcon': {
-            color: isDarkMode ? '#ffffff' : '#000000',
+          ".MuiTablePagination-selectIcon": {
+            color: isDarkMode ? "#ffffff" : "#000000",
           },
         }}
       />

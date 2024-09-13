@@ -1,13 +1,21 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { FormField } from './FormField';
-import Table from './Table'; // Update this line to match your actual file name
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { FormField } from "./FormField";
+import Table from "./Table";
+import { CircularProgress, Typography, Box } from "@mui/material";
+import { useTheme } from "./ThemeContext";
+import FormattedRecommendations from "./FormattedRecommendations";
 
-const PlantStatusSection = ({ isDarkMode, token }) => {
-  const [plantId, setPlantId] = useState('');
+const PlantStatusSection = ({ token }) => {
+  const [plantId, setPlantId] = useState("");
   const [searchResult, setSearchResult] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [selectedPlantId, setSelectedPlantId] = useState(null);
+  const [recommendation, setRecommendation] = useState("");
+  const [isRecommendationLoading, setIsRecommendationLoading] = useState(false);
+  const [recommendationError, setRecommendationError] = useState(null);
+  const { isDarkMode } = useTheme();
 
   const handleSearch = async (e) => {
     e.preventDefault();
@@ -18,17 +26,20 @@ const PlantStatusSection = ({ isDarkMode, token }) => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch(`https://backend-hackaton-production-f38b.up.railway.app/v1/api/plants/${plantId}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      });
+      const response = await fetch(
+        `https://backend-hackaton-production-f38b.up.railway.app/v1/api/plants/${plantId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
       if (!response.ok) {
-        throw new Error('Failed to fetch plant data');
+        throw new Error("Failed to fetch plant data");
       }
       const data = await response.json();
-      setSearchResult([data]); // Wrap the single result in an array
+      setSearchResult([data]);
     } catch (err) {
       setError(err.message);
       setSearchResult(null);
@@ -45,6 +56,48 @@ const PlantStatusSection = ({ isDarkMode, token }) => {
     }
   };
 
+  const handleSelectPlant = (plantId) => {
+    setSelectedPlantId(plantId);
+  };
+
+  useEffect(() => {
+    const fetchRecommendation = async () => {
+      if (!selectedPlantId) return;
+
+      setIsRecommendationLoading(true);
+      setRecommendationError(null);
+
+      try {
+        console.log(`Fetching recommendation for plant ID: ${selectedPlantId}`);
+        //  const response = await fetch(`https://backend-hackaton-production-f38b.up.railway.app/v1/api/assistance/ia/${selectedPlantId}`,
+        const response = await fetch(
+          `https://backend-hackaton-production-f38b.up.railway.app/v1/api/assistance/ia/12`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log("Received recommendation data:", data);
+        setRecommendation(data);
+      } catch (err) {
+        console.error("Error fetching recommendation:", err);
+        setRecommendationError(`Error fetching recommendation: ${err.message}`);
+      } finally {
+        setIsRecommendationLoading(false);
+      }
+    };
+
+    fetchRecommendation();
+  }, [selectedPlantId, token]);
+
   const renderForm = () => (
     <motion.form
       onSubmit={handleSearch}
@@ -54,7 +107,7 @@ const PlantStatusSection = ({ isDarkMode, token }) => {
       transition={{ duration: 0.5 }}
       className="grid grid-cols-1 md:grid-cols-2 gap-6"
     >
-      <FormField 
+      <FormField
         field={{ name: "ID Planta", type: "number", label: "ID Planta" }}
         index={0}
         value={plantId}
@@ -71,34 +124,58 @@ const PlantStatusSection = ({ isDarkMode, token }) => {
         } text-white rounded-lg transition-colors duration-300 shadow-md`}
         disabled={isLoading}
       >
-        {isLoading ? 'Buscando...' : 'Buscar'}
+        {isLoading ? "Buscando..." : "Buscar"}
       </motion.button>
     </motion.form>
   );
 
   return (
-    <div
-      className={`${
-        isDarkMode ? "bg-gray-800" : "bg-white"
-      } p-6 rounded-lg shadow-md`}
-    >
-      <h3
-        className={`text-2xl font-semibold mb-6 ${
-          isDarkMode ? "text-gray-200" : "text-gray-800"
-        }`}
+    <Box>
+      <div
+        className={`${
+          isDarkMode ? "bg-gray-800" : "bg-white"
+        } p-6 rounded-lg shadow-md mb-6`}
       >
-        Consultar Estado de Plantas
-      </h3>
-      {renderForm()}
-      <div className="mt-6">
-        <Table 
-          token={token}
-          searchResult={searchResult}
-          isLoading={isLoading}
-          error={error}
-        />
+        <h3
+          className={`text-xl sm:text-2xl font-semibold mb-4 sm:mb-6 ${
+            isDarkMode ? "text-gray-200" : "text-gray-800"
+          }`}
+        >
+          Consultar estado de plantas
+        </h3>
+        {renderForm()}
+        <Box mt={6}>
+          <Table
+            token={token}
+            searchResult={searchResult}
+            isLoading={isLoading}
+            error={error}
+            onSelectPlant={handleSelectPlant}
+            isDarkMode={isDarkMode}
+          />
+        </Box>
       </div>
-    </div>
+
+      {selectedPlantId && (
+        <div
+          className={`${
+            isDarkMode ? "bg-gray-800" : "bg-white"
+          } p-6 rounded-lg shadow-md mt-6`}
+        >
+          {isRecommendationLoading ? (
+            <Box display="flex" justifyContent="center" mt={6}>
+              <CircularProgress />
+            </Box>
+          ) : recommendationError ? (
+            <Typography color="error" mt={6}>
+              {recommendationError}
+            </Typography>
+          ) : (
+            <FormattedRecommendations recommendation={recommendation} />
+          )}
+        </div>
+      )}
+    </Box>
   );
 };
 
