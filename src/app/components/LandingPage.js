@@ -181,14 +181,6 @@ const LandingPage = ({ onGetStarted }) => {
                   FAQ
                 </a>
               </li>
-              <li>
-                <a
-                  href="#contacto"
-                  className="hover:text-green-500 transition-colors"
-                >
-                  Contacto
-                </a>
-              </li>
             </ul>
           </nav>
         </div>
@@ -265,7 +257,7 @@ const LandingPage = ({ onGetStarted }) => {
             <h2 className="text-3xl font-bold text-center mb-12">
               Galería de Plantas Monitoreadas por IA
             </h2>
-            <div className="max-w-4xl mx-auto bg-white dark:bg-gray-700 rounded-lg shadow-lg overflow-hidden">
+            <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
               <Slider {...carouselSettings}>
                 {carouselImages.map((img, index) => (
                   <div key={index} className="px-2">
@@ -282,10 +274,6 @@ const LandingPage = ({ onGetStarted }) => {
                 ))}
               </Slider>
             </div>
-            <p className="text-center mt-6 text-gray-600 dark:text-gray-300">
-              Nuestro sistema de IA analiza constantemente las imágenes y datos
-              de sensores para proporcionar recomendaciones precisas.
-            </p>
           </div>
         </section>
 
