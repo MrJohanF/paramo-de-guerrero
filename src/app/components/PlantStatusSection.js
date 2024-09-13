@@ -105,23 +105,25 @@ const PlantStatusSection = ({ token }) => {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.5 }}
-      className="grid grid-cols-1 md:grid-cols-2 gap-6"
+      className="flex flex-col md:flex-row items-end space-y-4 md:space-y-0 md:space-x-4"
     >
-      <FormField
-        field={{ name: "ID Planta", type: "number", label: "ID Planta" }}
-        index={0}
-        value={plantId}
-        onChange={handleInputChange}
-      />
+      <div className="flex-grow w-full md:w-auto">
+        <FormField
+          field={{ name: "ID Planta", type: "number", label: "ID Planta" }}
+          index={0}
+          value={plantId}
+          onChange={handleInputChange}
+        />
+      </div>
       <motion.button
         type="submit"
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className={`col-span-2 mt-6 py-3 px-6 ${
+        className={`w-full md:w-auto px-6 py-3 ${
           isDarkMode
             ? "bg-green-600 hover:bg-green-700"
             : "bg-green-500 hover:bg-green-600"
-        } text-white rounded-lg transition-colors duration-300 shadow-md`}
+        } text-white rounded-lg transition-colors duration-300 shadow-md flex-shrink-0`}
         disabled={isLoading}
       >
         {isLoading ? "Buscando..." : "Buscar"}
@@ -141,8 +143,9 @@ const PlantStatusSection = ({ token }) => {
             isDarkMode ? "text-gray-200" : "text-gray-800"
           }`}
         >
-          Consultar estado de plantas
+          Consultar Estado de Plantas
         </h3>
+
         {renderForm()}
         <Box mt={6}>
           <Table

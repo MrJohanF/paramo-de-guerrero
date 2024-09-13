@@ -20,7 +20,7 @@ import {
   Button,
 } from "@mui/material";
 import { useTheme } from "./ThemeContext";
-import { Sparkles } from 'lucide-react';
+import { Sparkles } from "lucide-react";
 
 const columns = [
   { id: "codigo", label: "Codigo", minWidth: 100 },
@@ -81,11 +81,14 @@ const StyledButton = styled(Button)(({ theme, isDarkMode }) => ({
   },
   display: "flex",
   alignItems: "center",
+  justifyContent: "center",
   gap: "8px",
   padding: "6px 16px",
   borderRadius: "8px",
   textTransform: "none",
   fontWeight: "bold",
+  minWidth: "40px",
+  height: "40px",
 }));
 
 const ResponsiveTable = ({
@@ -177,11 +180,8 @@ const ResponsiveTable = ({
         <StyledButton
           onClick={() => onSelectPlant(row.codigo)}
           isDarkMode={isDarkMode}
-          startIcon={<Sparkles size={16} />}
-
-          // IA button
         >
-         
+          <Sparkles size={20} />
         </StyledButton>
       </CardContent>
     </StyledCard>
@@ -267,12 +267,9 @@ const ResponsiveTable = ({
                           <StyledButton
                             onClick={() => onSelectPlant(row.codigo)}
                             isDarkMode={isDarkMode}
-                            startIcon={<Sparkles size={16} />}
                             size="small"
-
-                            // IA button
                           >
-                            
+                            <Sparkles size={20} />
                           </StyledButton>
                         </StyledTableCell>
                       );
