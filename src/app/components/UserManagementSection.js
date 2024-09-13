@@ -1,167 +1,154 @@
-import React, { useState, useEffect } from 'react';
-import { Users, UserPlus, AlertCircle } from 'lucide-react';
+import React from 'react';
+import { Users, UserPlus, AlertCircle, Leaf, ChevronRight, Search } from 'lucide-react';
+import useUserManagement from './useUserManagement';
 
 const UserManagementSection = ({ token, isDarkMode }) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [role, setRole] = useState('');
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [users, setUsers] = useState([]);
+  const {
+    username,
+    setUsername,
+    password,
+    setPassword,
+    role,
+    setRole,
+    error,
+    success,
+    isLoading,
+    users,
+    handleCreateUser,
+  } = useUserManagement(token);
 
-  useEffect(() => {
-    fetchUsers();
-  }, [token]);
-
-  const fetchUsers = async () => {
-    try {
-      const response = await fetch(
-        'https://backend-hackaton-production-f38b.up.railway.app/v1/api/users',
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-        }
-      );
-      if (response.ok) {
-        const data = await response.json();
-        setUsers(data);
-      } else {
-        console.error('Failed to fetch users');
-        setError('Error al obtener la lista de usuarios');
-      }
-    } catch (error) {
-      console.error('Error fetching users:', error);
-      setError('Error de conexión al obtener usuarios');
-    }
-  };
-
-  const handleCreateUser = async (e) => {
-    e.preventDefault();
-    setError('');
-    setSuccess('');
-    setIsLoading(true);
-
-    try {
-      const response = await fetch(
-        'https://backend-hackaton-production-f38b.up.railway.app/v1/api/users/create',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-          body: JSON.stringify({ username, password, role }),
-        }
-      );
-
-      if (response.ok) {
-        setSuccess('Usuario creado exitosamente');
-        setUsername('');
-        setPassword('');
-        setRole('');
-        fetchUsers(); // Refresh user list
-      } else {
-        const data = await response.json();
-        setError(data.message || 'Error al crear el usuario');
-      }
-    } catch (error) {
-      setError('Error de conexión');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const cardClass = `bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 ${isDarkMode ? 'text-white' : 'text-gray-800'}`;
-  const inputClass = `w-full p-2 rounded-md border ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'}`;
-  const buttonClass = `w-full p-2 rounded-md bg-green-500 text-white font-bold hover:bg-green-600 transition duration-300`;
+  const cardClass = `${isDarkMode ? "bg-gray-800" : "bg-white"} rounded-lg shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl`;
+  const inputClass = `w-full p-3 rounded-md ${
+    isDarkMode 
+      ? "bg-gray-700 border-gray-600 text-white" 
+      : "bg-gray-50 border-gray-300 text-gray-900"
+  } border focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300`;
+  const buttonClass = "w-full p-3 rounded-md bg-green-500 text-white font-bold hover:bg-green-600 transition-all duration-300 transform hover:scale-105";
+  const labelClass = `block text-sm font-medium mb-2 ${isDarkMode ? "text-gray-300" : "text-gray-700"}`;
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="space-y-8">
       <div className={cardClass}>
-        <h3 className="text-lg font-semibold mb-4 flex items-center">
-          <UserPlus className="w-6 h-6 mr-2" />
-          Crear Nuevo Usuario
-        </h3>
-        <form onSubmit={handleCreateUser} className="space-y-4">
+        <div className="bg-green-500 text-white p-6">
+          <h2 className="text-2xl font-bold flex items-center">
+            <UserPlus className="w-8 h-8 mr-3" />
+            Gestión de Usuarios
+          </h2>
+        </div>
+        <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
           <div>
-            <label htmlFor="username" className="block text-sm font-medium mb-1">
-              Nombre de usuario
-            </label>
-            <input
-              id="username"
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-              className={inputClass}
-            />
+            <h3 className="text-xl font-semibold mb-4 flex items-center">
+              <UserPlus className="w-6 h-6 mr-2 text-green-500" />
+              Crear Nuevo Usuario
+            </h3>
+            <form onSubmit={handleCreateUser} className="space-y-4">
+              <div>
+                <label htmlFor="username" className={labelClass}>
+                  Nombre de usuario
+                </label>
+                <input
+                  id="username"
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                  className={inputClass}
+                  placeholder="Ingrese el nombre de usuario"
+                />
+              </div>
+              <div>
+                <label htmlFor="password" className={labelClass}>
+                  Contraseña
+                </label>
+                <input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className={inputClass}
+                  placeholder="Ingrese la contraseña"
+                />
+              </div>
+              <div>
+                <label htmlFor="role" className={labelClass}>
+                  Rol
+                </label>
+                <select
+                  id="role"
+                  value={role}
+                  onChange={(e) => setRole(e.target.value)}
+                  required
+                  className={inputClass}
+                >
+                  <option value="">Seleccione un rol</option>
+                  <option value="Administrador">Administrador</option>
+                  <option value="Usuario">Usuario</option>
+                </select>
+              </div>
+              <button type="submit" disabled={isLoading} className={buttonClass}>
+                {isLoading ? 'Creando...' : 'Crear Usuario'}
+              </button>
+            </form>
+            {error && (
+              <div className="mt-4 p-3 rounded-md bg-red-100 text-red-700 flex items-center">
+                <AlertCircle className="h-5 w-5 mr-2" />
+                <p>{error}</p>
+              </div>
+            )}
+            {success && (
+              <div className="mt-4 p-3 rounded-md bg-green-100 text-green-700 flex items-center">
+                <Leaf className="h-5 w-5 mr-2" />
+                <p>{success}</p>
+              </div>
+            )}
           </div>
+          
           <div>
-            <label htmlFor="password" className="block text-sm font-medium mb-1">
-              Contraseña
-            </label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className={inputClass}
-            />
+            <h3 className="text-xl font-semibold mb-4 flex items-center">
+              <Users className="w-6 h-6 mr-2 text-green-500" />
+              Usuarios Existentes
+            </h3>
+            <div className="mb-4 relative">
+              <input
+                type="text"
+                placeholder="Buscar usuarios..."
+                className={`${inputClass} pl-10`}
+              />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            </div>
+            <div className={`max-h-96 overflow-y-auto ${isDarkMode ? 'scrollbar-dark' : 'scrollbar-light'}`}>
+              {users.length > 0 ? (
+                <ul className="space-y-2">
+                  {users.map(user => (
+                    <li key={user.id} className={`flex justify-between items-center p-3 rounded-md ${
+                      isDarkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-100 hover:bg-gray-200'
+                    } transition-all duration-300`}>
+                      <span className="flex items-center">
+                        <Leaf className="w-5 h-5 mr-3 text-green-500" />
+                        <span className={isDarkMode ? "text-gray-200" : "text-gray-700"}>{user.username}</span>
+                      </span>
+                      <div className="flex items-center">
+                        <span className={`text-sm px-2 py-1 rounded-full ${
+                          user.role === 'Administrador' 
+                            ? 'bg-purple-200 text-purple-800' 
+                            : 'bg-blue-200 text-blue-800'
+                        }`}>
+                          {user.role}
+                        </span>
+                        <ChevronRight className={`w-5 h-5 ml-2 ${isDarkMode ? "text-gray-400" : "text-gray-500"}`} />
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className={`text-center py-4 ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>
+                  No hay usuarios para mostrar.
+                </p>
+              )}
+            </div>
           </div>
-          <div>
-            <label htmlFor="role" className="block text-sm font-medium mb-1">
-              Rol
-            </label>
-            <select
-              id="role"
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              required
-              className={inputClass}
-            >
-              <option value="">Seleccione un rol</option>
-              <option value="Administrador">Administrador</option>
-              <option value="Usuario">Usuario</option>
-            </select>
-          </div>
-          <button type="submit" disabled={isLoading} className={buttonClass}>
-            {isLoading ? 'Creando...' : 'Crear Usuario'}
-          </button>
-        </form>
-        {error && (
-          <div className="mt-4 p-2 rounded-md bg-red-100 text-red-700 flex items-center">
-            <AlertCircle className="h-4 w-4 mr-2" />
-            <p>{error}</p>
-          </div>
-        )}
-        {success && (
-          <div className="mt-4 p-2 rounded-md bg-green-100 text-green-700 flex items-center">
-            <AlertCircle className="h-4 w-4 mr-2" />
-            <p>{success}</p>
-          </div>
-        )}
-      </div>
-      
-      <div className={cardClass}>
-        <h3 className="text-lg font-semibold mb-4 flex items-center">
-          <Users className="w-6 h-6 mr-2" />
-          Usuarios Existentes
-        </h3>
-        {users.length > 0 ? (
-          <ul className="space-y-2">
-            {users.map(user => (
-              <li key={user.id} className="flex justify-between items-center p-2 rounded-md bg-gray-100 dark:bg-gray-700">
-                <span>{user.username}</span>
-                <span className="text-sm text-gray-500 dark:text-gray-400">{user.role}</span>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-gray-500 dark:text-gray-400">No hay usuarios para mostrar.</p>
-        )}
+        </div>
       </div>
     </div>
   );
