@@ -71,7 +71,7 @@ const PlantStatusSection = ({ token }) => {
         console.log(`Fetching recommendation for plant ID: ${selectedPlantId}`);
         //  const response = await fetch(`https://backend-hackaton-production-f38b.up.railway.app/v1/api/assistance/ia/${selectedPlantId}`,
         const response = await fetch(
-          `https://backend-hackaton-production-f38b.up.railway.app/v1/api/assistance/ia/12`,
+          `https://backend-hackaton-production-f38b.up.railway.app/v1/api/assistance/ia/${selectedPlantId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
