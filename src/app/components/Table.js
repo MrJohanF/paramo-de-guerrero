@@ -14,6 +14,8 @@ import {
   Typography,
   Box,
   CircularProgress,
+  Alert,
+  AlertTitle,
   styled,
 } from "@mui/material";
 import { useTheme } from "./ThemeContext";
@@ -60,17 +62,23 @@ const StyledCard = styled(Card)(({ theme, isDarkMode }) => ({
   marginBottom: '1rem',
 }));
 
-const ResponsiveTable = ({ token }) => {
+const ResponsiveTable = ({ token, searchResult, isLoading, error, plantId }) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [fetchError, setFetchError] = useState(null);
   const isMobile = useMediaQuery('(max-width:600px)');
   const { isDarkMode } = useTheme();
 
   useEffect(() => {
     const fetchData = async () => {
+      if (plantId !== '' && searchResult) {
+        setRows([searchResult]);
+        setLoading(false);
+        return;
+      }
+
       try {
         if (!token) {
           throw new Error('No authentication token available');
@@ -92,13 +100,17 @@ const ResponsiveTable = ({ token }) => {
         setLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
-        setError(error.message);
+        setFetchError(error.message);
         setLoading(false);
       }
     };
 
     fetchData();
-  }, [token]);
+  }, [token, searchResult, plantId]);
+
+  useEffect(() => {
+    setPage(0);
+  }, [searchResult, plantId]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -128,7 +140,7 @@ const ResponsiveTable = ({ token }) => {
     </StyledCard>
   );
 
-  if (loading) {
+  if (loading || isLoading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" height="300px">
         <CircularProgress color={isDarkMode ? "secondary" : "primary"} />
@@ -136,15 +148,24 @@ const ResponsiveTable = ({ token }) => {
     );
   }
 
+  if (fetchError || error) {
+    return (
+      <Alert severity="error" className="my-4">
+        <AlertTitle>Error</AlertTitle>
+        {fetchError || error}
+      </Alert>
+    );
+  }
+
+  const displayRows = rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+
   return (
     <StyledPaper isDarkMode={isDarkMode} sx={{ width: '100%', overflow: 'hidden' }}>
       {isMobile ? (
         <Box sx={{ p: 2 }}>
-          {rows
-            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            .map((row) => (
-              <MobileCard key={row.id} row={row} />
-            ))}
+          {displayRows.map((row, index) => (
+            <MobileCard key={index} row={row} />
+          ))}
         </Box>
       ) : (
         <TableContainer sx={{ maxHeight: 440 }}>
@@ -165,19 +186,24 @@ const ResponsiveTable = ({ token }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row) => (
-                  <StyledTableRow hover tabIndex={-1} key={row.id} isDarkMode={isDarkMode}>
-                    {columns.map((column) => {
-                      const value = row[column.id];
-                      return (
-                        <StyledTableCell key={column.id} align={column.align} isDarkMode={isDarkMode}>
-                          {value}
-                        </StyledTableCell>
-                      );
-                    })}
-                  </StyledTableRow>
-                ))}
+              {displayRows.map((row, index) => (
+                <StyledTableRow 
+                  hover 
+                  tabIndex={-1} 
+                  key={index}
+                  isDarkMode={isDarkMode}
+                  sx={plantId !== '' && index === 0 ? { backgroundColor: isDarkMode ? '#2a4a3e' : '#e6f4ea' } : {}}
+                >
+                  {columns.map((column) => {
+                    const value = row[column.id];
+                    return (
+                      <StyledTableCell key={column.id} align={column.align} isDarkMode={isDarkMode}>
+                        {value}
+                      </StyledTableCell>
+                    );
+                  })}
+                </StyledTableRow>
+              ))}
             </TableBody>
           </Table>
         </TableContainer>

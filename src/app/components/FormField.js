@@ -59,7 +59,7 @@ export const FormField = ({ field, index, value, onChange }) => {
       transition={{ duration: 0.2, delay: index * 0.03 }}
       className="w-full"
     >
-      <FormControl fullWidth variant="outlined" className="mb-2 sm:mb-3">
+      <FormControl fullWidth variant="outlined">
         {field.type === "select" ? (
           <>
             <InputLabel>{field.label}</InputLabel>
