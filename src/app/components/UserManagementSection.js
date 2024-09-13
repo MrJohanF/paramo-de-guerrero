@@ -83,7 +83,8 @@ const UserManagementSection = ({ token, isDarkMode }) => {
                 >
                   <option value="">Seleccione un rol</option>
                   <option value="Administrador">Administrador</option>
-                  <option value="Usuario">Usuario</option>
+                  <option value="Supervisor">Supervisor</option>
+                  <option value="Cuidador">Cuidador</option>
                 </select>
               </div>
               <button type="submit" disabled={isLoading} className={buttonClass}>
