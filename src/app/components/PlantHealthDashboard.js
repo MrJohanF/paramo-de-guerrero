@@ -94,7 +94,7 @@ const PlantHealthDashboard = () => {
   }
 
   if (!isLoggedIn) {
-    return <LoginComponent onLogin={handleLogin} />;
+    return <LoginComponent onLogin={handleLogin} onBackToHome={() => setShowLandingPage(true)} />;
   }
 
   return (

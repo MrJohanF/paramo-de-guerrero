@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from './ThemeContext';
-import { Leaf, Lock, User } from 'lucide-react';
+import { Leaf, Lock, User, ChevronLeft } from 'lucide-react';
 
-const LoginComponent = ({ onLogin }) => {
+const LoginComponent = ({ onLogin, onBackToHome  }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -64,9 +64,20 @@ const LoginComponent = ({ onLogin }) => {
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className={`p-8 rounded-lg shadow-lg ${isDarkMode ? 'bg-gray-800' : 'bg-white'} max-w-md w-full`}
+        className={`p-8 rounded-lg shadow-lg ${isDarkMode ? 'bg-gray-800' : 'bg-white'} max-w-md w-full relative`}
       >
-        <div className="flex items-center justify-center mb-6">
+        <motion.a
+          href="#"
+          onClick={(e) => { e.preventDefault(); onBackToHome(); }}
+          className={`absolute top-4 left-4 flex items-center ${isDarkMode ? 'text-green-400 hover:text-green-300' : 'text-green-600 hover:text-green-500'} transition-colors duration-300`}
+          whileHover={{ x: -3 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <ChevronLeft className="w-5 h-5 mr-1" />
+          <span className="text-sm font-medium">Volver</span>
+        </motion.a>
+
+        <div className="flex items-center justify-center mb-6 mt-8">
           <Leaf className={`w-12 h-12 ${isDarkMode ? 'text-green-400' : 'text-green-600'}`} />
         </div>
         <h2 className={`text-2xl font-bold mb-6 text-center ${isDarkMode ? 'text-green-400' : 'text-green-600'}`}>
