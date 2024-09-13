@@ -1,7 +1,5 @@
-//SideBarOptions.js
-
 import React from 'react';
-import { Home, Flower2, Leaf, Apple, AlertTriangle, PlusCircle, Droplet, ChartLine } from 'lucide-react';
+import { Home, Flower2, Leaf, Apple, AlertTriangle, PlusCircle, Droplet, ChartLine, Users } from 'lucide-react';
 
 export const sidebarOptions = [
   { name: "Dashboard", icon: <Home className="w-6 h-6" /> },
@@ -13,3 +11,13 @@ export const sidebarOptions = [
   { name: "Estado de plantas", icon: <Droplet className="w-6 h-6" /> },
   { name: "Reportes", icon: <ChartLine className="w-6 h-6" /> },
 ];
+
+export const getAdminSidebarOptions = (userRole) => {
+  if (userRole === "Administrador") {
+    return [
+      ...sidebarOptions,
+      { name: "Gestión de Usuarios", icon: <Users className="w-6 h-6" /> },
+    ];
+  }
+  return sidebarOptions;
+};

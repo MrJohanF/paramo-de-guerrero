@@ -1,6 +1,6 @@
 import React, { useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sun, Moon, LogOut, User } from "lucide-react";
+import { Sun, Moon, LogOut, User, Settings } from "lucide-react";
 import { useTheme } from "./ThemeContext";
 import { sidebarOptions } from "./SidebarOptions";
 
@@ -77,19 +77,33 @@ export const Sidebar = ({
             isDarkMode ? "bg-gray-700" : "bg-green-100"
           }`}
         >
-          <div className="flex items-center mb-2">
-            <User
-              className={`w-8 h-8 mr-2 ${
-                isDarkMode ? "text-green-400" : "text-green-600"
-              }`}
-            />
-            <span
-              className={`font-semibold ${
-                isDarkMode ? "text-white" : "text-gray-800"
-              }`}
-            >
-              {userInfo?.username || "Usuario"}
-            </span>
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center">
+              <User
+                className={`w-8 h-8 mr-2 ${
+                  isDarkMode ? "text-green-400" : "text-green-600"
+                }`}
+              />
+              <span
+                className={`font-semibold ${
+                  isDarkMode ? "text-white" : "text-gray-800"
+                }`}
+              >
+                {userInfo?.username || "Usuario"}
+              </span>
+            </div>
+            {userInfo?.role === "Administrador" && (
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={() => handleSectionClick("Gestión de Usuarios")}
+                className={`p-1 rounded-full ${
+                  isDarkMode ? "bg-gray-600 text-green-400" : "bg-green-200 text-green-700"
+                }`}
+              >
+                <Settings className="w-5 h-5" />
+              </motion.button>
+            )}
           </div>
           <p
             className={`text-sm ${
