@@ -62,7 +62,7 @@ const StyledCard = styled(Card)(({ theme, isDarkMode }) => ({
   marginBottom: '1rem',
 }));
 
-const ResponsiveTable = ({ token, searchResult, isLoading, error, plantId }) => {
+const ResponsiveTable = ({ token, searchResult, isLoading, error }) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [rows, setRows] = useState([]);
@@ -73,8 +73,8 @@ const ResponsiveTable = ({ token, searchResult, isLoading, error, plantId }) => 
 
   useEffect(() => {
     const fetchData = async () => {
-      if (plantId !== '' && searchResult) {
-        setRows([searchResult]);
+      if (searchResult) {
+        setRows(Array.isArray(searchResult) ? searchResult : [searchResult]);
         setLoading(false);
         return;
       }
@@ -106,11 +106,11 @@ const ResponsiveTable = ({ token, searchResult, isLoading, error, plantId }) => 
     };
 
     fetchData();
-  }, [token, searchResult, plantId]);
+  }, [token, searchResult]);
 
   useEffect(() => {
     setPage(0);
-  }, [searchResult, plantId]);
+  }, [searchResult]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -192,7 +192,7 @@ const ResponsiveTable = ({ token, searchResult, isLoading, error, plantId }) => 
                   tabIndex={-1} 
                   key={index}
                   isDarkMode={isDarkMode}
-                  sx={plantId !== '' && index === 0 ? { backgroundColor: isDarkMode ? '#2a4a3e' : '#e6f4ea' } : {}}
+                  sx={rows.length === 1 ? { backgroundColor: isDarkMode ? '#2a4a3e' : '#e6f4ea' } : {}}
                 >
                   {columns.map((column) => {
                     const value = row[column.id];

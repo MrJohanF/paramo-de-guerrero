@@ -51,6 +51,16 @@ export const FormField = ({ field, index, value, onChange }) => {
     },
   });
 
+  const handleChange = (e) => {
+    if (onChange) {
+      onChange(e);
+    } else if (field.onChange) {
+      field.onChange(e);
+    }
+  };
+
+  const fieldValue = value !== undefined ? value : (field.value || "");
+
   return (
     <motion.div
       key={index}
@@ -65,12 +75,12 @@ export const FormField = ({ field, index, value, onChange }) => {
             <InputLabel>{field.label}</InputLabel>
             <Select
               label={field.label}
-              value={value || ""}
-              onChange={onChange}
+              value={fieldValue}
+              onChange={handleChange}
               name={field.name}
               sx={getFieldStyles()}
             >
-              {field.options.map((option, idx) => (
+              {field.options?.map((option, idx) => (
                 <MenuItem key={idx} value={option}>
                   {option}
                 </MenuItem>
@@ -81,8 +91,8 @@ export const FormField = ({ field, index, value, onChange }) => {
           <TextField
             label={field.label}
             type={field.type}
-            value={value || ""}
-            onChange={onChange}
+            value={fieldValue}
+            onChange={handleChange}
             name={field.name}
             InputLabelProps={
               field.type === "date" ? { shrink: true } : undefined
