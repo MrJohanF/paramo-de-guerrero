@@ -1,84 +1,28 @@
-import React, { useState } from "react";
+import React from "react";
 import { motion } from "framer-motion";
 import { useTheme } from "./ThemeContext";
 import { Leaf, Lock, User, ChevronLeft } from "lucide-react";
 import PlantLoadingAnimation from "./PlantLoadingAnimation";
+import useLogin from "./useLogin";
 
 const LoginComponent = ({ onLogin, onBackToHome }) => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [userInfo, setUserInfo] = useState(null);
+  const {
+    username,
+    setUsername,
+    password,
+    setPassword,
+    error,
+    isLoading,
+    userInfo,
+    handleLogin,
+  } = useLogin();
   const { isDarkMode } = useTheme();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (username && password) {
-      setIsLoading(true);
-      setError("");
-
-      const minLoadingTime = 1500;
-      const startTime = Date.now();
-
-      try {
-        const response = await fetch(
-          "https://backend-hackaton-production-f38b.up.railway.app/v1/api/auth/login",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ username, password }),
-          }
-        );
-
-        if (response.ok) {
-          const data = await response.json();
-          localStorage.setItem("token", data.token);
-          const userInfoData = await fetchUserInfo(data.token);
-
-          const elapsedTime = Date.now() - startTime;
-          if (elapsedTime < minLoadingTime) {
-            await new Promise((resolve) =>
-              setTimeout(resolve, minLoadingTime - elapsedTime)
-            );
-          }
-
-          onLogin(data.token, userInfoData);
-        } else {
-          setError("Credenciales inválidas");
-        }
-      } catch (error) {
-        setError("Error en el inicio de sesión");
-      } finally {
-        setIsLoading(false);
-      }
-    } else {
-      setError("Por favor, ingrese tanto el usuario como la contraseña");
-    }
-  };
-
-  const fetchUserInfo = async (token) => {
-    try {
-      const response = await fetch(
-        "https://backend-hackaton-production-f38b.up.railway.app/v1/api/auth/info-user",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (response.ok) {
-        const data = await response.json();
-        setUserInfo(data);
-        return data;
-      } else {
-        console.error("Error al obtener información del usuario");
-      }
-    } catch (error) {
-      console.error("Error en la solicitud de información del usuario", error);
+    const result = await handleLogin();
+    if (result) {
+      onLogin(result.token, result.userInfo);
     }
   };
 
