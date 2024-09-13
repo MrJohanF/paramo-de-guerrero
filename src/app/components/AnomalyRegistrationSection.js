@@ -126,6 +126,7 @@ const AnomalyRegistrationSection = ({ isDarkMode }) => {
           onClose={() => setSnackbar({ ...snackbar, open: false })}
           severity={snackbar.severity}
           sx={{ width: '100%' }}
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         >
           {snackbar.message}
         </Alert>
