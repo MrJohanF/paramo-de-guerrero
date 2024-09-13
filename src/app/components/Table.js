@@ -33,7 +33,7 @@ const columns = [
 
 const StyledPaper = styled(Paper)(({ theme, isDarkMode }) => ({
   backgroundColor: isDarkMode ? "#1e2124" : "#ffffff",
-  color: isDarkMode ? "#ffffff" : "#000000",
+  color: isDarkMode ? "#e0e0e0" : "#000000",
 }));
 
 const StyledTableCell = styled(TableCell)(
@@ -43,7 +43,7 @@ const StyledTableCell = styled(TableCell)(
         ? "#4ade80"
         : "#1e7e34"
       : isDarkMode
-      ? "#ffffff"
+      ? "#a0a0a0"
       : "#000000",
     borderBottom: `1px solid ${isDarkMode ? "#2d3035" : "#e0e0e0"}`,
     backgroundColor: isHeader
@@ -57,38 +57,35 @@ const StyledTableCell = styled(TableCell)(
 
 const StyledTableRow = styled(TableRow)(({ theme, isDarkMode }) => ({
   "&:nth-of-type(odd)": {
-    backgroundColor: isDarkMode ? "#24272b" : "#f9f9f9",
+    backgroundColor: isDarkMode ? "#23272b" : "#f9f9f9",
   },
   "&:nth-of-type(even)": {
     backgroundColor: isDarkMode ? "#1e2124" : "#ffffff",
   },
   "&:hover": {
-    backgroundColor: isDarkMode ? "#2d3035" : "#f0f0f0",
+    backgroundColor: isDarkMode ? "#2a2f33" : "#f0f0f0",
   },
 }));
 
 const StyledCard = styled(Card)(({ theme, isDarkMode }) => ({
-  backgroundColor: isDarkMode ? "#24272b" : "#ffffff",
-  color: isDarkMode ? "#ffffff" : "#000000",
+  backgroundColor: isDarkMode ? "#1e2124" : "#ffffff",
+  color: isDarkMode ? "#e0e0e0" : "#000000",
   marginBottom: "1rem",
 }));
 
 const StyledButton = styled(Button)(({ theme, isDarkMode }) => ({
-  backgroundColor: isDarkMode ? "#4ade80" : "#22c55e",
-  color: isDarkMode ? "#000000" : "#ffffff",
+  backgroundColor: "#4ade80",
+  color: "#000000",
   "&:hover": {
-    backgroundColor: isDarkMode ? "#22c55e" : "#16a34a",
+    backgroundColor: "#22c55e",
   },
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  gap: "8px",
-  padding: "6px 16px",
-  borderRadius: "8px",
-  textTransform: "none",
-  fontWeight: "bold",
   minWidth: "40px",
   height: "40px",
+  padding: 0,
+  borderRadius: "8px",
 }));
 
 const ResponsiveTable = ({
@@ -300,12 +297,12 @@ const ResponsiveTable = ({
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
         sx={{
-          color: isDarkMode ? "#ffffff" : "#000000",
+          color: isDarkMode ? "#a0a0a0" : "#000000",
           ".MuiTablePagination-select": {
-            color: isDarkMode ? "#ffffff" : "#000000",
+            color: isDarkMode ? "#a0a0a0" : "#000000",
           },
           ".MuiTablePagination-selectIcon": {
-            color: isDarkMode ? "#ffffff" : "#000000",
+            color: isDarkMode ? "#a0a0a0" : "#000000",
           },
         }}
       />
