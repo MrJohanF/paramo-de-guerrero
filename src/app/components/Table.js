@@ -18,9 +18,10 @@ import {
   AlertTitle,
   styled,
   Button,
+  Modal,
 } from "@mui/material";
 import { useTheme } from "./ThemeContext";
-import { Sparkles } from "lucide-react";
+import { Sparkles, QrCode } from "lucide-react";
 
 const columns = [
   { id: "codigo", label: "Codigo", minWidth: 100 },
@@ -88,6 +89,22 @@ const StyledButton = styled(Button)(({ theme, isDarkMode }) => ({
   borderRadius: "8px",
 }));
 
+const StyledModal = styled(Modal)(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+}));
+
+const ModalContent = styled(Box)(({ theme, isDarkMode }) => ({
+  backgroundColor: isDarkMode ? "#1e2124" : "#ffffff",
+  border: "2px solid #000",
+  boxShadow: 24,
+  padding: theme.spacing(2, 4, 3),
+  maxWidth: "90%",
+  maxHeight: "90%",
+  overflow: "auto",
+}));
+
 const ResponsiveTable = ({
   token,
   searchResult,
@@ -100,6 +117,8 @@ const ResponsiveTable = ({
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState(null);
+  const [openQR, setOpenQR] = useState(false);
+  const [selectedQR, setSelectedQR] = useState(null);
   const isMobile = useMediaQuery("(max-width:600px)");
   const { isDarkMode } = useTheme();
 
@@ -155,6 +174,33 @@ const ResponsiveTable = ({
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+  const handleOpenQR = (qrData) => {
+    // Asumiendo que qrData es una cadena base64 que incluye el prefijo de datos
+    if (qrData && qrData.startsWith('<img src="data:image/')) {
+      // Extraer la parte base64 de la cadena
+      const base64Data = qrData.split("base64,")[1].split('"')[0];
+      setSelectedQR(`data:image/gif;base64,${base64Data}`);
+    } else {
+      // Si no es una cadena base64 válida, mostrar un mensaje de error
+      setSelectedQR(null);
+    }
+    setOpenQR(true);
+  };
+
+  const handleCloseQR = () => {
+    setOpenQR(false);
+  };
+
+  const downloadQR = () => {
+    if (selectedQR) {
+      const link = document.createElement("a");
+      link.href = selectedQR;
+      link.download = "QR_code.png";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
 
   const MobileCard = ({ row }) => (
     <StyledCard isDarkMode={isDarkMode}>
@@ -174,12 +220,20 @@ const ResponsiveTable = ({
         <Typography variant="body2" sx={{ mb: 0.5 }}>
           Tags: {row.tags}
         </Typography>
-        <StyledButton
-          onClick={() => onSelectPlant(row.codigo)}
-          isDarkMode={isDarkMode}
-        >
-          <Sparkles size={20} />
-        </StyledButton>
+        <Box sx={{ display: "flex", gap: 1, mt: 1 }}>
+          <StyledButton
+            onClick={() => onSelectPlant(row.codigo)}
+            isDarkMode={isDarkMode}
+          >
+            <Sparkles size={20} />
+          </StyledButton>
+          <StyledButton
+            onClick={() => handleOpenQR(row.qr)}
+            isDarkMode={isDarkMode}
+          >
+            <QrCode size={20} />
+          </StyledButton>
+        </Box>
       </CardContent>
     </StyledCard>
   );
@@ -261,13 +315,22 @@ const ResponsiveTable = ({
                           align={column.align}
                           isDarkMode={isDarkMode}
                         >
-                          <StyledButton
-                            onClick={() => onSelectPlant(row.codigo)}
-                            isDarkMode={isDarkMode}
-                            size="small"
-                          >
-                            <Sparkles size={20} />
-                          </StyledButton>
+                          <Box sx={{ display: "flex", gap: 1 }}>
+                            <StyledButton
+                              onClick={() => onSelectPlant(row.codigo)}
+                              isDarkMode={isDarkMode}
+                              size="small"
+                            >
+                              <Sparkles size={20} />
+                            </StyledButton>
+                            <StyledButton
+                              onClick={() => handleOpenQR(row.qr)}
+                              isDarkMode={isDarkMode}
+                              size="small"
+                            >
+                              <QrCode size={20} />
+                            </StyledButton>
+                          </Box>
                         </StyledTableCell>
                       );
                     }
@@ -306,6 +369,35 @@ const ResponsiveTable = ({
           },
         }}
       />
+      <StyledModal
+        open={openQR}
+        onClose={handleCloseQR}
+        aria-labelledby="qr-modal-title"
+        aria-describedby="qr-modal-description"
+      >
+        <ModalContent isDarkMode={isDarkMode}>
+          <h2 id="qr-modal-title">Código QR</h2>
+          {selectedQR ? (
+            <img
+              src={selectedQR}
+              alt="QR Code"
+              style={{ maxWidth: "100%", height: "auto" }}
+            />
+          ) : (
+            <p>No se pudo cargar el código QR.</p>
+          )}
+          {selectedQR && (
+            <Button
+              onClick={downloadQR}
+              variant="contained"
+              color="primary"
+              style={{ marginTop: "1rem" }}
+            >
+              Descargar QR
+            </Button>
+          )}
+        </ModalContent>
+      </StyledModal>
     </StyledPaper>
   );
 };
