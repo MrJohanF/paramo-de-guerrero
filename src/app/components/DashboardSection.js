@@ -17,7 +17,7 @@ import {
 import { sidebarOptions } from "./SidebarOptions";
 import WeatherWidget from "./WeatherWidget";
 
-const Card = ({ title, description, icon }) => {
+const Card = ({ title, description, icon, options, setActiveSection }) => {
   const { isDarkMode } = useTheme();
   return (
     <motion.div
@@ -40,11 +40,12 @@ const Card = ({ title, description, icon }) => {
         {description}
       </p>
       <button
+        onClick={() => setActiveSection(options)}
         className={`text-sm text-green-600 ${
           isDarkMode ? "bg-green-900" : "bg-green-100"
         } px-3 py-1 rounded-md hover:bg-green-200 transition-colors`}
       >
-        Ver detalles
+       Ver detalles
       </button>
     </motion.div>
   );
@@ -133,6 +134,8 @@ export const DashboardSection = ({ setActiveSection, token }) => {
                 title={option.name}
                 description={`Resumen de ${option.name.toLowerCase()}`}
                 icon={option.icon}
+                setActiveSection={setActiveSection}
+                options={option.name}
               />
             ))}
           </div>
