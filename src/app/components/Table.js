@@ -22,6 +22,7 @@ import {
 } from "@mui/material";
 import { useTheme } from "./ThemeContext";
 import { Sparkles, QrCode } from "lucide-react";
+import PlantTrackerQRModal from "./PlantTrackerQRModal";
 
 const columns = [
   { id: "codigo", label: "Codigo", minWidth: 100 },
@@ -121,6 +122,8 @@ const ResponsiveTable = ({
   const [selectedQR, setSelectedQR] = useState(null);
   const isMobile = useMediaQuery("(max-width:600px)");
   const { isDarkMode } = useTheme();
+  const [qrModalOpen, setQrModalOpen] = useState(false);
+  const [selectedPlantCode, setSelectedPlantCode] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -174,33 +177,20 @@ const ResponsiveTable = ({
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
-  const handleOpenQR = (qrData) => {
-    // Asumiendo que qrData es una cadena base64 que incluye el prefijo de datos
+
+  const handleOpenQR = (qrData, plantCode) => {
     if (qrData && qrData.startsWith('<img src="data:image/')) {
-      // Extraer la parte base64 de la cadena
       const base64Data = qrData.split("base64,")[1].split('"')[0];
       setSelectedQR(`data:image/gif;base64,${base64Data}`);
+      setSelectedPlantCode(plantCode);
+      setQrModalOpen(true);
     } else {
-      // Si no es una cadena base64 válida, mostrar un mensaje de error
       setSelectedQR(null);
-    }
-    setOpenQR(true);
-  };
-
-  const handleCloseQR = () => {
-    setOpenQR(false);
-  };
-
-  const downloadQR = () => {
-    if (selectedQR) {
-      const link = document.createElement("a");
-      link.href = selectedQR;
-      link.download = "QR_code.png";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      setQrModalOpen(true);
     }
   };
+
+
 
   const MobileCard = ({ row }) => (
     <StyledCard isDarkMode={isDarkMode}>
@@ -228,8 +218,9 @@ const ResponsiveTable = ({
             <Sparkles size={20} />
           </StyledButton>
           <StyledButton
-            onClick={() => handleOpenQR(row.qr)}
+            onClick={() => handleOpenQR(row.qr, row.codigo)}
             isDarkMode={isDarkMode}
+            size="small"
           >
             <QrCode size={20} />
           </StyledButton>
@@ -324,7 +315,7 @@ const ResponsiveTable = ({
                               <Sparkles size={20} />
                             </StyledButton>
                             <StyledButton
-                              onClick={() => handleOpenQR(row.qr)}
+                              onClick={() => handleOpenQR(row.qr, row.codigo)}
                               isDarkMode={isDarkMode}
                               size="small"
                             >
@@ -369,35 +360,12 @@ const ResponsiveTable = ({
           },
         }}
       />
-      <StyledModal
-        open={openQR}
-        onClose={handleCloseQR}
-        aria-labelledby="qr-modal-title"
-        aria-describedby="qr-modal-description"
-      >
-        <ModalContent isDarkMode={isDarkMode}>
-          <h2 id="qr-modal-title">Código QR</h2>
-          {selectedQR ? (
-            <img
-              src={selectedQR}
-              alt="QR Code"
-              style={{ maxWidth: "100%", height: "auto" }}
-            />
-          ) : (
-            <p>No se pudo cargar el código QR.</p>
-          )}
-          {selectedQR && (
-            <Button
-              onClick={downloadQR}
-              variant="contained"
-              color="primary"
-              style={{ marginTop: "1rem" }}
-            >
-              Descargar QR
-            </Button>
-          )}
-        </ModalContent>
-      </StyledModal>
+      <PlantTrackerQRModal
+        open={qrModalOpen}
+        onClose={() => setQrModalOpen(false)}
+        selectedQR={selectedQR}
+        plantCode={selectedPlantCode}
+      />
     </StyledPaper>
   );
 };
