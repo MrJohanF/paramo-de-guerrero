@@ -15,6 +15,7 @@ import { fetchPlants, deletePlant } from "../../utils/api";
 import DesktopTable from "./DesktopTable";
 import MobileCardList from "./MobileCardList";
 import PlantTrackerQRModal from "../PlantTrackerQRModal";
+import ConfirmationModal from "../ConfirmationModal";
 
 const ResponsiveTable = ({
   token,
