@@ -17,7 +17,7 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, isDarkMode }) => {
           <AlertTriangle className="w-6 h-6 text-yellow-500 mr-2" />
           <h3 className="text-lg font-semibold">Confirmar eliminación</h3>
         </div>
-        <p className="mb-6">¿Estás seguro de que quieres eliminar este usuario? Esta acción no se puede deshacer.</p>
+        <p className="mb-6">¿Estás seguro de que quieres eliminar ? Esta acción no se puede deshacer.</p>
         <div className="flex justify-end space-x-3">
           <button
             onClick={onClose}
