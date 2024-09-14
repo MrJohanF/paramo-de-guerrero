@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { useTheme } from "./ThemeContext";
+import { useTheme } from "../contexts/ThemeContext";
 import { Leaf, Lock, User, ChevronLeft } from "lucide-react";
 import PlantLoadingAnimation from "./PlantLoadingAnimation";
 import useLogin from "./useLogin";

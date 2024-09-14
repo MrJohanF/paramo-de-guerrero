@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useTheme } from './ThemeContext';
+import { useTheme } from '../contexts/ThemeContext';
 import { Sun, Cloud, CloudRain, CloudSnow, Wind, Droplets, Thermometer } from 'lucide-react';
 
 const WeatherWidget = ({ token }) => {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Menu } from "lucide-react";
-import { useTheme } from "./ThemeContext";
+import { useTheme } from "../contexts/ThemeContext";
 import { Sidebar } from "./Sidebar";
 import { DashboardSection } from "./DashboardSection";
 import PlantRegistrationSection from "./PlantRegistrationSection";

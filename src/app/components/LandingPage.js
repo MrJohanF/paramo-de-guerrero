@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useTheme } from "./ThemeContext";
+import { useTheme } from "../contexts/ThemeContext";
 import {
   Leaf,
   ArrowRight,

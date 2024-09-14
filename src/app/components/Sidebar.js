@@ -1,7 +1,7 @@
 import React, { useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sun, Moon, LogOut, User, Settings } from "lucide-react";
-import { useTheme } from "./ThemeContext";
+import { useTheme } from "../contexts/ThemeContext";
 import { sidebarOptions } from "./SidebarOptions";
 
 const sidebarVariants = {

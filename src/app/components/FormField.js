@@ -8,7 +8,7 @@ import {
   useTheme as useMuiTheme,
 } from "@mui/material";
 import { motion } from "framer-motion";
-import { useTheme } from "./ThemeContext";
+import { useTheme } from "../contexts/ThemeContext";
 
 export const FormField = ({ field, index, value, onChange }) => {
   const muiTheme = useMuiTheme();

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { FormField } from "./FormField";
-import Table from "./Table";
+import ResponsiveTable from "../components/ResponsiveTable";
 import { CircularProgress, Typography, Box } from "@mui/material";
-import { useTheme } from "./ThemeContext";
+import { useTheme } from "../contexts/ThemeContext";
 import FormattedRecommendations from "./FormattedRecommendations";
 
 const PlantStatusSection = ({ token }) => {
@@ -148,13 +148,12 @@ const PlantStatusSection = ({ token }) => {
 
         {renderForm()}
         <Box mt={6}>
-          <Table
+          <ResponsiveTable
             token={token}
             searchResult={searchResult}
             isLoading={isLoading}
             error={error}
             onSelectPlant={handleSelectPlant}
-            isDarkMode={isDarkMode}
           />
         </Box>
       </div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Typography, Box } from '@mui/material';
-import { useTheme } from "./ThemeContext";
+import { useTheme } from "../contexts/ThemeContext";
 import { motion, AnimatePresence } from 'framer-motion';
 
 const AnimatedTypography = ({ children, delay = 0 }) => (

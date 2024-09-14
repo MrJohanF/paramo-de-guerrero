@@ -20,7 +20,7 @@ import {
   Button,
   Modal,
 } from "@mui/material";
-import { useTheme } from "./ThemeContext";
+import { useTheme } from "../contexts/ThemeContext";
 import { Sparkles, QrCode } from "lucide-react";
 import PlantTrackerQRModal from "./PlantTrackerQRModal";
 

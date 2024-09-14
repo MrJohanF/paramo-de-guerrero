@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal, Box, Typography, Button } from '@mui/material';
 import { styled } from '@mui/system';
-import { useTheme } from './ThemeContext';
+import { useTheme } from '../contexts/ThemeContext';
 import { Download, X } from 'lucide-react';
 import { toPng } from 'html-to-image';
 
@@ -94,12 +94,6 @@ const PlantTrackerQRModal = ({ open, onClose, selectedQR, plantCode }) => {
         <CloseButton onClick={onClose} isDarkMode={isDarkMode}>
           <X size={24} />
         </CloseButton>
-        <Typography variant="h5" component="h2" id="qr-modal-title" gutterBottom>
-          Plant QR Code
-        </Typography>
-        <Typography variant="body1" id="qr-modal-description" paragraph>
-          Scan this QR code to quickly access information about plant {plantCode} in the Plant Tracker app.
-        </Typography>
         {selectedQR ? (
           <QRImage src={selectedQR} alt={`QR Code for plant ${plantCode}`} />
         ) : (
