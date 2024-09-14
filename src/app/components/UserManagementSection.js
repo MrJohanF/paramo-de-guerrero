@@ -1,6 +1,15 @@
-import React from 'react';
-import { Users, UserPlus, AlertCircle, Leaf, ChevronRight, Search } from 'lucide-react';
-import useUserManagement from './useUserManagement';
+import React, { useState } from "react";
+import {
+  Users,
+  UserPlus,
+  AlertCircle,
+  Leaf,
+  ChevronRight,
+  Search,
+  Trash2,
+} from "lucide-react";
+import useUserManagement from "./useUserManagement";
+import ConfirmationModal from './ConfirmationModal';
 
 const UserManagementSection = ({ token, isDarkMode }) => {
   const {
@@ -15,16 +24,43 @@ const UserManagementSection = ({ token, isDarkMode }) => {
     isLoading,
     users,
     handleCreateUser,
+    deleteUser,
   } = useUserManagement(token);
 
-  const cardClass = `${isDarkMode ? "bg-gray-800" : "bg-white"} rounded-lg shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl`;
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [userToDelete, setUserToDelete] = useState(null);
+
+  const cardClass = `${
+    isDarkMode ? "bg-gray-800" : "bg-white"
+  } rounded-lg shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl`;
   const inputClass = `w-full p-3 rounded-md ${
-    isDarkMode 
-      ? "bg-gray-700 border-gray-600 text-white" 
+    isDarkMode
+      ? "bg-gray-700 border-gray-600 text-white"
       : "bg-gray-50 border-gray-300 text-gray-900"
   } border focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300`;
-  const buttonClass = "w-full p-3 rounded-md bg-green-500 text-white font-bold hover:bg-green-600 transition-all duration-300 transform hover:scale-105";
-  const labelClass = `block text-sm font-medium mb-2 ${isDarkMode ? "text-gray-300" : "text-gray-700"}`;
+  const buttonClass =
+    "w-full p-3 rounded-md bg-green-500 text-white font-bold hover:bg-green-600 transition-all duration-300 transform hover:scale-105";
+  const labelClass = `block text-sm font-medium mb-2 ${
+    isDarkMode ? "text-gray-300" : "text-gray-700"
+  }`;
+
+  const handleDeleteClick = (user) => {
+    setUserToDelete(user);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (userToDelete) {
+      const deleted = await deleteUser(userToDelete.id);
+      if (deleted) {
+        console.log("Usuario eliminado exitosamente");
+      } else {
+        console.log("Error al eliminar el usuario");
+      }
+    }
+    setIsDeleteModalOpen(false);
+    setUserToDelete(null);
+  };
 
   return (
     <div className="space-y-8">
@@ -87,8 +123,12 @@ const UserManagementSection = ({ token, isDarkMode }) => {
                   <option value="Cuidador">Cuidador</option>
                 </select>
               </div>
-              <button type="submit" disabled={isLoading} className={buttonClass}>
-                {isLoading ? 'Creando...' : 'Crear Usuario'}
+              <button
+                type="submit"
+                disabled={isLoading}
+                className={buttonClass}
+              >
+                {isLoading ? "Creando..." : "Crear Usuario"}
               </button>
             </form>
             {error && (
@@ -104,7 +144,7 @@ const UserManagementSection = ({ token, isDarkMode }) => {
               </div>
             )}
           </div>
-          
+
           <div>
             <h3 className="text-xl font-semibold mb-4 flex items-center">
               <Users className="w-6 h-6 mr-2 text-green-500" />
@@ -118,32 +158,64 @@ const UserManagementSection = ({ token, isDarkMode }) => {
               />
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             </div>
-            <div className={`max-h-96 overflow-y-auto ${isDarkMode ? 'scrollbar-dark' : 'scrollbar-light'}`}>
+            <div
+              className={`max-h-96 overflow-y-auto ${
+                isDarkMode ? "scrollbar-dark" : "scrollbar-light"
+              }`}
+            >
               {users.length > 0 ? (
                 <ul className="space-y-2">
-                  {users.map(user => (
-                    <li key={user.id} className={`flex justify-between items-center p-3 rounded-md ${
-                      isDarkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-100 hover:bg-gray-200'
-                    } transition-all duration-300`}>
+                  {users.map((user) => (
+                    <li
+                      key={user.id}
+                      className={`flex justify-between items-center p-3 rounded-md ${
+                        isDarkMode
+                          ? "bg-gray-700 hover:bg-gray-600"
+                          : "bg-gray-100 hover:bg-gray-200"
+                      } transition-all duration-300`}
+                    >
                       <span className="flex items-center">
                         <Leaf className="w-5 h-5 mr-3 text-green-500" />
-                        <span className={isDarkMode ? "text-gray-200" : "text-gray-700"}>{user.username}</span>
+                        <span
+                          className={
+                            isDarkMode ? "text-gray-200" : "text-gray-700"
+                          }
+                        >
+                          {user.username}
+                        </span>
                       </span>
                       <div className="flex items-center">
-                        <span className={`text-sm px-2 py-1 rounded-full ${
-                          user.role === 'Administrador' 
-                            ? 'bg-purple-200 text-purple-800' 
-                            : 'bg-blue-200 text-blue-800'
-                        }`}>
+                        <span
+                          className={`text-sm px-2 py-1 rounded-full ${
+                            user.role === "Administrador"
+                              ? "bg-purple-200 text-purple-800"
+                              : "bg-blue-200 text-blue-800"
+                          }`}
+                        >
                           {user.role}
                         </span>
-                        <ChevronRight className={`w-5 h-5 ml-2 ${isDarkMode ? "text-gray-400" : "text-gray-500"}`} />
+                        <button
+                          onClick={() => handleDeleteClick(user)}
+                          className="ml-2 p-1 rounded-full hover:bg-red-100 transition-colors duration-300"
+                          title="Eliminar usuario"
+                        >
+                          <Trash2 className="w-5 h-5 text-red-500" />
+                        </button>
+                        <ChevronRight
+                          className={`w-5 h-5 ml-2 ${
+                            isDarkMode ? "text-gray-400" : "text-gray-500"
+                          }`}
+                        />
                       </div>
                     </li>
                   ))}
                 </ul>
               ) : (
-                <p className={`text-center py-4 ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>
+                <p
+                  className={`text-center py-4 ${
+                    isDarkMode ? "text-gray-400" : "text-gray-500"
+                  }`}
+                >
                   No hay usuarios para mostrar.
                 </p>
               )}
@@ -151,6 +223,13 @@ const UserManagementSection = ({ token, isDarkMode }) => {
           </div>
         </div>
       </div>
+
+      <ConfirmationModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleConfirmDelete}
+        isDarkMode={isDarkMode}
+      />
     </div>
   );
 };

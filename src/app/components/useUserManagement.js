@@ -72,6 +72,39 @@ const useUserManagement = (token) => {
     }
   };
 
+  const deleteUser = async (userId) => {
+    setError('');
+    setSuccess('');
+    setIsLoading(true);
+
+    try {
+      const response = await fetch(
+        `https://backend-hackaton-production-f38b.up.railway.app/v1/api/users/delete/${userId}`,
+        {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        setSuccess('Usuario eliminado exitosamente');
+        fetchUsers(); // Refresh user list
+        return true;
+      } else {
+        const data = await response.json();
+        setError(data.message || 'Error al eliminar el usuario');
+        return false;
+      }
+    } catch (error) {
+      setError('Error de conexión al intentar eliminar el usuario');
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return {
     username,
     setUsername,
@@ -84,6 +117,7 @@ const useUserManagement = (token) => {
     isLoading,
     users,
     handleCreateUser,
+    deleteUser,
   };
 };
 
