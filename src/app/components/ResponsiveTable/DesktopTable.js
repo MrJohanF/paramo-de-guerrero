@@ -5,9 +5,9 @@ import { Table, TableBody, TableContainer, TableHead, TableRow, Box } from "@mui
 import { useTheme } from "../../contexts/ThemeContext";
 import { StyledTableCell, StyledTableRow, StyledButton } from "./styles";
 import { columns } from "./constants";
-import { Sparkles, QrCode } from "lucide-react";
+import { Sparkles, QrCode, Trash2 } from "lucide-react";
 
-const DesktopTable = ({ rows, onSelectPlant, handleOpenQR }) => {
+const DesktopTable = ({ rows, onSelectPlant, handleOpenQR, handleDeletePlant }) => {
   const { isDarkMode } = useTheme();
 
   return (
@@ -47,6 +47,9 @@ const DesktopTable = ({ rows, onSelectPlant, handleOpenQR }) => {
                         </StyledButton>
                         <StyledButton onClick={() => handleOpenQR(row.qr, row.codigo)} isDarkMode={isDarkMode} size="small">
                           <QrCode size={20} />
+                        </StyledButton>
+                        <StyledButton onClick={() => handleDeletePlant(row.id)} isDarkMode={isDarkMode} size="small" color="error">
+                          <Trash2 size={20} />
                         </StyledButton>
                       </Box>
                     </StyledTableCell>

@@ -5,7 +5,7 @@ import { useMediaQuery } from "@mui/material";
 import { TablePagination, Box, CircularProgress, Alert, AlertTitle } from "@mui/material";
 import { useTheme } from "../../contexts/ThemeContext";
 import { StyledPaper } from "./styles";
-import { fetchPlants } from "../../utils/api";
+import { fetchPlants, deletePlant } from "../../utils/api";
 import DesktopTable from "./DesktopTable";
 import MobileCardList from "./MobileCardList";
 import PlantTrackerQRModal from "../PlantTrackerQRModal";
@@ -69,6 +69,15 @@ const ResponsiveTable = ({ token, searchResult, isLoading, error, onSelectPlant 
     }
   };
 
+  const handleDeletePlant = async (plantId) => {
+    try {
+      await deletePlant(token, plantId);
+      setRows(rows.filter(row => row.codigo !== plantId));
+    } catch (error) {
+      console.error("Error deleting plant:", error);
+    }
+  };
+
   if (loading || isLoading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" height="300px">
@@ -91,9 +100,9 @@ const ResponsiveTable = ({ token, searchResult, isLoading, error, onSelectPlant 
   return (
     <StyledPaper isDarkMode={isDarkMode} sx={{ width: "100%", overflow: "hidden" }}>
       {isMobile ? (
-        <MobileCardList rows={displayRows} onSelectPlant={onSelectPlant} handleOpenQR={handleOpenQR} />
+        <MobileCardList rows={displayRows} onSelectPlant={onSelectPlant} handleOpenQR={handleOpenQR} handleDeletePlant={handleDeletePlant} />
       ) : (
-        <DesktopTable rows={displayRows} onSelectPlant={onSelectPlant} handleOpenQR={handleOpenQR} />
+        <DesktopTable rows={displayRows} onSelectPlant={onSelectPlant} handleOpenQR={handleOpenQR} handleDeletePlant={handleDeletePlant} />
       )}
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}

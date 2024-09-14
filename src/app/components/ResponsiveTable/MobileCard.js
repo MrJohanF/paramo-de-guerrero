@@ -3,9 +3,9 @@ import React from "react";
 import { CardContent, Typography, Box } from "@mui/material";
 import { useTheme } from "../../contexts/ThemeContext";
 import { StyledCard, StyledButton } from "./styles";
-import { Sparkles, QrCode } from "lucide-react";
+import { Sparkles, QrCode, Trash2 } from "lucide-react";
 
-const MobileCard = ({ row, onSelectPlant, handleOpenQR }) => {
+const MobileCard = ({ row, onSelectPlant, handleOpenQR, handleDeletePlant }) => {
   const { isDarkMode } = useTheme();
 
   return (
@@ -29,6 +29,9 @@ const MobileCard = ({ row, onSelectPlant, handleOpenQR }) => {
           </StyledButton>
           <StyledButton onClick={() => handleOpenQR(row.qr, row.codigo)} isDarkMode={isDarkMode} size="small">
             <QrCode size={20} />
+          </StyledButton>
+          <StyledButton onClick={() => handleDeletePlant(row.codigo)} isDarkMode={isDarkMode} size="small" color="error">
+            <Trash2 size={20} />
           </StyledButton>
         </Box>
       </CardContent>
