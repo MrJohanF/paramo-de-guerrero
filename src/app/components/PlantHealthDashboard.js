@@ -14,6 +14,7 @@ import LoginComponent from "./LoginComponent";
 import LandingPage from "./LandingPage";
 import UserManagementSection from "./UserManagementSection";
 import { getAdminSidebarOptions } from "./SidebarOptions";
+import ReportsSection from "./ReportsSection";
 
 const PlantHealthDashboard = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -99,9 +100,7 @@ const PlantHealthDashboard = () => {
       "Estado de plantas": (
         <PlantStatusSection isDarkMode={isDarkMode} token={token} />
       ),
-      Reportes: (
-        <AnomalyRegistrationSection isDarkMode={isDarkMode} token={token} />
-      ),
+      Reportes: <ReportsSection isDarkMode={isDarkMode} token={token} />,
       "Gestión de Usuarios":
         userInfo?.role === "Administrador" ? (
           <UserManagementSection isDarkMode={isDarkMode} token={token} />
