@@ -9,7 +9,7 @@ import {
   Trash2,
 } from "lucide-react";
 import useUserManagement from "./useUserManagement";
-import ConfirmationModal from './ConfirmationModal';
+import ConfirmationModal from "./ConfirmationModal";
 
 const UserManagementSection = ({ token, isDarkMode }) => {
   const {
@@ -229,6 +229,10 @@ const UserManagementSection = ({ token, isDarkMode }) => {
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={handleConfirmDelete}
         isDarkMode={isDarkMode}
+        title="Confirmar eliminación de planta"
+        message="¿Estás seguro de que quieres eliminar esta planta? Esta acción no se puede deshacer."
+        confirmText="Eliminar"
+        cancelText="Cancelar"
       />
     </div>
   );

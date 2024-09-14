@@ -2,7 +2,13 @@
 
 import React, { useState, useEffect } from "react";
 import { useMediaQuery } from "@mui/material";
-import { TablePagination, Box, CircularProgress, Alert, AlertTitle } from "@mui/material";
+import {
+  TablePagination,
+  Box,
+  CircularProgress,
+  Alert,
+  AlertTitle,
+} from "@mui/material";
 import { useTheme } from "../../contexts/ThemeContext";
 import { StyledPaper } from "./styles";
 import { fetchPlants, deletePlant } from "../../utils/api";
@@ -10,7 +16,13 @@ import DesktopTable from "./DesktopTable";
 import MobileCardList from "./MobileCardList";
 import PlantTrackerQRModal from "../PlantTrackerQRModal";
 
-const ResponsiveTable = ({ token, searchResult, isLoading, error, onSelectPlant }) => {
+const ResponsiveTable = ({
+  token,
+  searchResult,
+  isLoading,
+  error,
+  onSelectPlant,
+}) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [rows, setRows] = useState([]);
@@ -19,6 +31,8 @@ const ResponsiveTable = ({ token, searchResult, isLoading, error, onSelectPlant 
   const [qrModalOpen, setQrModalOpen] = useState(false);
   const [selectedQR, setSelectedQR] = useState(null);
   const [selectedPlantCode, setSelectedPlantCode] = useState(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [plantToDelete, setPlantToDelete] = useState(null);
   const isMobile = useMediaQuery("(max-width:600px)");
   const { isDarkMode } = useTheme();
 
@@ -69,18 +83,32 @@ const ResponsiveTable = ({ token, searchResult, isLoading, error, onSelectPlant 
     }
   };
 
-  const handleDeletePlant = async (plantId) => {
-    try {
-      await deletePlant(token, plantId);
-      setRows(rows.filter(row => row.codigo !== plantId));
-    } catch (error) {
-      console.error("Error deleting plant:", error);
+  const handleDeleteClick = (plant) => {
+    setPlantToDelete(plant);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (plantToDelete) {
+      try {
+        await deletePlant(token, plantToDelete.codigo);
+        setRows(rows.filter((row) => row.codigo !== plantToDelete.codigo));
+      } catch (error) {
+        console.error("Error deleting plant:", error);
+      }
     }
+    setIsDeleteModalOpen(false);
+    setPlantToDelete(null);
   };
 
   if (loading || isLoading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" height="300px">
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="300px"
+      >
         <CircularProgress color={isDarkMode ? "secondary" : "primary"} />
       </Box>
     );
@@ -95,14 +123,30 @@ const ResponsiveTable = ({ token, searchResult, isLoading, error, onSelectPlant 
     );
   }
 
-  const displayRows = rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  const displayRows = rows.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
 
   return (
-    <StyledPaper isDarkMode={isDarkMode} sx={{ width: "100%", overflow: "hidden" }}>
+    <StyledPaper
+      isDarkMode={isDarkMode}
+      sx={{ width: "100%", overflow: "hidden" }}
+    >
       {isMobile ? (
-        <MobileCardList rows={displayRows} onSelectPlant={onSelectPlant} handleOpenQR={handleOpenQR} handleDeletePlant={handleDeletePlant} />
+        <MobileCardList
+          rows={displayRows}
+          onSelectPlant={onSelectPlant}
+          handleOpenQR={handleOpenQR}
+          handleDeletePlant={handleDeleteClick}
+        />
       ) : (
-        <DesktopTable rows={displayRows} onSelectPlant={onSelectPlant} handleOpenQR={handleOpenQR} handleDeletePlant={handleDeletePlant} />
+        <DesktopTable
+          rows={displayRows}
+          onSelectPlant={onSelectPlant}
+          handleOpenQR={handleOpenQR}
+          handleDeletePlant={handleDeleteClick}
+        />
       )}
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
@@ -127,6 +171,16 @@ const ResponsiveTable = ({ token, searchResult, isLoading, error, onSelectPlant 
         onClose={() => setQrModalOpen(false)}
         selectedQR={selectedQR}
         plantCode={selectedPlantCode}
+      />
+      <ConfirmationModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleConfirmDelete}
+        isDarkMode={isDarkMode}
+        title="Confirmar eliminación de planta"
+        message="¿Estás seguro de que quieres eliminar esta planta? Esta acción no se puede deshacer."
+        confirmText="Eliminar"
+        cancelText="Cancelar"
       />
     </StyledPaper>
   );
